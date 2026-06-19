@@ -1,0 +1,8 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\application\service\WarehouseBinService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\domain\entity\BinMovement.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\domain\entity\WarehouseBin.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\domain\event\BinCapacityReachedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\infrastructure\repository\WarehouseBinRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\infrastructure\rest\WarehouseBinController.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\wms-service\src\main\java\com\furniture\erp\wms\WmsServiceApplication.java

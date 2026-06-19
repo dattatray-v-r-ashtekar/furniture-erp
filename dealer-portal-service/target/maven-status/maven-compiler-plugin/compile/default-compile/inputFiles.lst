@@ -1,0 +1,8 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\application\service\WholesaleOrderService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\DealerPortalServiceApplication.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\domain\entity\WholesaleItem.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\domain\entity\WholesaleOrder.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\domain\event\BulkDiscountAppliedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\infrastructure\repository\WholesaleOrderRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\dealer-portal-service\src\main\java\com\furniture\erp\dealerportal\infrastructure\rest\WholesaleOrderController.java

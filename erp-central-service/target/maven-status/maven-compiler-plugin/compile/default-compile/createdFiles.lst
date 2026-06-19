@@ -1,0 +1,9 @@
+com\furniture\erp\erpcentral\domain\event\SalesOrderCreatedEvent.class
+com\furniture\erp\erpcentral\domain\entity\SalesOrderLine.class
+com\furniture\erp\erpcentral\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\erpcentral\infrastructure\rest\CreateRequest.class
+com\furniture\erp\erpcentral\ErpCentralServiceApplication.class
+com\furniture\erp\erpcentral\domain\entity\SalesOrder.class
+com\furniture\erp\erpcentral\infrastructure\rest\SalesOrderController.class
+com\furniture\erp\erpcentral\application\service\SalesOrderService.class
+com\furniture\erp\erpcentral\infrastructure\repository\SalesOrderRepository.class

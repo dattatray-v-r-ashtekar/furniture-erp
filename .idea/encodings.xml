@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/accounting-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bi-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-messaging/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crm-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dealer-portal-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ecommerce-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/erp-central-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/hrms-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/inventory-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mes-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/payroll-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/procurement-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qms-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tms-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/wms-service/src/main/java" charset="UTF-8" />
+  </component>
+</project>

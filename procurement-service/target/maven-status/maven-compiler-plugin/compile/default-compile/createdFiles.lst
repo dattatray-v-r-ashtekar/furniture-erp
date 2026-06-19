@@ -1,0 +1,13 @@
+com\furniture\erp\procurement\application\service\ProcurementService.class
+com\furniture\erp\procurement\domain\event\GoodsReceivedEvent$ReceivedLine.class
+com\furniture\erp\procurement\domain\entity\PurchaseOrder.class
+com\furniture\erp\procurement\domain\entity\OrderStatus.class
+com\furniture\erp\procurement\domain\entity\PurchaseOrderLine.class
+com\furniture\erp\procurement\domain\event\GoodsReceivedEvent.class
+com\furniture\erp\procurement\infrastructure\rest\ProcurementController.class
+com\furniture\erp\procurement\infrastructure\repository\PurchaseOrderRepository.class
+com\furniture\erp\procurement\ProcurementServiceApplication.class
+com\furniture\erp\procurement\domain\event\PurchaseOrderIssuedEvent.class
+com\furniture\erp\procurement\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\procurement\infrastructure\rest\CreateOrderRequest.class
+com\furniture\erp\procurement\infrastructure\rest\AddLineRequest.class

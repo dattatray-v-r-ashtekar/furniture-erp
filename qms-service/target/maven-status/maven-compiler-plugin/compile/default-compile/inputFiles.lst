@@ -1,0 +1,8 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\application\service\QualityInspectionService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\domain\entity\DefectLog.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\domain\entity\QualityInspection.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\domain\event\InspectionFailedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\infrastructure\repository\QualityInspectionRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\infrastructure\rest\QualityInspectionController.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\qms-service\src\main\java\com\furniture\erp\qms\QmsServiceApplication.java

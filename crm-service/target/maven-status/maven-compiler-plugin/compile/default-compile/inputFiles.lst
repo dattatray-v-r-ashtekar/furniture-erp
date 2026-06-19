@@ -1,0 +1,8 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\application\service\CustomerProfileService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\CrmServiceApplication.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\domain\entity\CustomerProfile.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\domain\entity\InteractionLog.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\domain\event\CustomerConvertedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\infrastructure\repository\CustomerProfileRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\crm-service\src\main\java\com\furniture\erp\crm\infrastructure\rest\CustomerProfileController.java

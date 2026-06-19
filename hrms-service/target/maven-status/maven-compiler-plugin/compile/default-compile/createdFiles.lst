@@ -1,0 +1,9 @@
+com\furniture\erp\hrms\application\service\EmployeeRecordService.class
+com\furniture\erp\hrms\domain\entity\EmployeeRecord.class
+com\furniture\erp\hrms\domain\entity\AttendanceLog.class
+com\furniture\erp\hrms\HrmsServiceApplication.class
+com\furniture\erp\hrms\infrastructure\rest\CreateRequest.class
+com\furniture\erp\hrms\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\hrms\domain\event\ShiftAssignedEvent.class
+com\furniture\erp\hrms\infrastructure\rest\EmployeeRecordController.class
+com\furniture\erp\hrms\infrastructure\repository\EmployeeRecordRepository.class

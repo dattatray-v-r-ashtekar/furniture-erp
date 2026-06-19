@@ -1,0 +1,16 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: hrms-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/erp_db
+    username: erp_user
+    password: erp_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092

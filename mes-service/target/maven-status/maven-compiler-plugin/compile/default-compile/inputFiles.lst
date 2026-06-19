@@ -1,0 +1,12 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\application\service\MesService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\entity\ProductionOrder.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\entity\ProductionStatus.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\entity\WorkOrder.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\entity\WorkOrderStatus.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\event\MaterialConsumptionRequestedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\event\ProductionCompletedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\domain\event\ProductionOrderCreatedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\infrastructure\repository\ProductionOrderRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\infrastructure\rest\MesController.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\mes-service\src\main\java\com\furniture\erp\mes\MesServiceApplication.java

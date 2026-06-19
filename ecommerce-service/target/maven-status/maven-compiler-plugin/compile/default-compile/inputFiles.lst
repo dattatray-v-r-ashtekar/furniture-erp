@@ -1,0 +1,8 @@
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\application\service\OnlineOrderService.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\domain\entity\CartItem.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\domain\entity\OnlineOrder.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\domain\event\PaymentProcessedEvent.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\EcommerceServiceApplication.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\infrastructure\messaging\KafkaDomainEventPublisher.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\infrastructure\repository\OnlineOrderRepository.java
+C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\ecommerce-service\src\main\java\com\furniture\erp\ecommerce\infrastructure\rest\OnlineOrderController.java

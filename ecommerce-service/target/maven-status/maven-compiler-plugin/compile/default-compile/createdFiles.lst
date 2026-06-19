@@ -1,0 +1,9 @@
+com\furniture\erp\ecommerce\infrastructure\repository\OnlineOrderRepository.class
+com\furniture\erp\ecommerce\domain\entity\OnlineOrder.class
+com\furniture\erp\ecommerce\EcommerceServiceApplication.class
+com\furniture\erp\ecommerce\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\ecommerce\infrastructure\rest\OnlineOrderController.class
+com\furniture\erp\ecommerce\domain\entity\CartItem.class
+com\furniture\erp\ecommerce\infrastructure\rest\CreateRequest.class
+com\furniture\erp\ecommerce\application\service\OnlineOrderService.class
+com\furniture\erp\ecommerce\domain\event\PaymentProcessedEvent.class

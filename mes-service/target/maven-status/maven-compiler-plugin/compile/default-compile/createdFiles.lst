@@ -1,0 +1,14 @@
+com\furniture\erp\mes\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\mes\MesServiceApplication.class
+com\furniture\erp\mes\domain\event\MaterialConsumptionRequestedEvent.class
+com\furniture\erp\mes\infrastructure\rest\ReportProgressRequest.class
+com\furniture\erp\mes\domain\entity\WorkOrder.class
+com\furniture\erp\mes\domain\entity\ProductionOrder.class
+com\furniture\erp\mes\domain\entity\WorkOrderStatus.class
+com\furniture\erp\mes\domain\event\ProductionOrderCreatedEvent.class
+com\furniture\erp\mes\infrastructure\repository\ProductionOrderRepository.class
+com\furniture\erp\mes\domain\entity\ProductionStatus.class
+com\furniture\erp\mes\domain\event\ProductionCompletedEvent.class
+com\furniture\erp\mes\infrastructure\rest\MesController.class
+com\furniture\erp\mes\infrastructure\rest\PlanProductionRequest.class
+com\furniture\erp\mes\application\service\MesService.class

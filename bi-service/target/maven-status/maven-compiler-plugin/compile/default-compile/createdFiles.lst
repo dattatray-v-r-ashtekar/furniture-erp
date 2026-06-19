@@ -1,0 +1,9 @@
+com\furniture\erp\bi\BiServiceApplication.class
+com\furniture\erp\bi\domain\entity\KpiMetric.class
+com\furniture\erp\bi\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\bi\infrastructure\repository\DashboardReportRepository.class
+com\furniture\erp\bi\application\service\DashboardReportService.class
+com\furniture\erp\bi\infrastructure\rest\CreateRequest.class
+com\furniture\erp\bi\infrastructure\rest\DashboardReportController.class
+com\furniture\erp\bi\domain\entity\DashboardReport.class
+com\furniture\erp\bi\domain\event\ReportGeneratedEvent.class

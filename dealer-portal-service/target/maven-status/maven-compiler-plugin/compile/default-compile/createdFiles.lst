@@ -1,0 +1,9 @@
+com\furniture\erp\dealerportal\infrastructure\rest\CreateRequest.class
+com\furniture\erp\dealerportal\infrastructure\rest\WholesaleOrderController.class
+com\furniture\erp\dealerportal\DealerPortalServiceApplication.class
+com\furniture\erp\dealerportal\domain\entity\WholesaleOrder.class
+com\furniture\erp\dealerportal\domain\entity\WholesaleItem.class
+com\furniture\erp\dealerportal\application\service\WholesaleOrderService.class
+com\furniture\erp\dealerportal\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\dealerportal\infrastructure\repository\WholesaleOrderRepository.class
+com\furniture\erp\dealerportal\domain\event\BulkDiscountAppliedEvent.class

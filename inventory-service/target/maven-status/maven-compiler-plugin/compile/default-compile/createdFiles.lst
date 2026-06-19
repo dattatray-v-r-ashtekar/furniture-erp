@@ -1,0 +1,9 @@
+com\furniture\erp\inventory\infrastructure\repository\StockItemRepository.class
+com\furniture\erp\inventory\infrastructure\rest\InventoryController.class
+com\furniture\erp\inventory\infrastructure\rest\UpdateStockRequest.class
+com\furniture\erp\inventory\InventoryServiceApplication.class
+com\furniture\erp\inventory\infrastructure\rest\CreateStockItemRequest.class
+com\furniture\erp\inventory\infrastructure\messaging\KafkaDomainEventPublisher.class
+com\furniture\erp\inventory\application\service\InventoryService.class
+com\furniture\erp\inventory\domain\entity\StockItem.class
+com\furniture\erp\inventory\domain\event\StockUpdatedEvent.class
