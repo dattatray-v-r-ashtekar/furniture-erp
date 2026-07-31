@@ -2,6 +2,61 @@
 
 While the high-level architecture diagram shows the conceptual flow, this document provides a comprehensive technical deep-dive into the entire Furniture ERP system.
 
+## 1. High-Level System Architecture Diagram (Expanded)
+
+```mermaid
+graph TD
+    %% External Actors
+    User(["Factory Worker / Admin"])
+    WebUI["Frontend Dashboard<br/>(Vanilla JS SPA)"]
+    Gemini(["Google Gemini API"])
+
+    %% UI to Backend
+    User -->|Interacts| WebUI
+    WebUI -->|"REST API"| API_Gateway{"Monolith Runner<br/>or K8s Gateway"}
+
+    %% Backend Services (Java)
+    subgraph "Core Java Microservices (Spring Boot)"
+        API_Gateway --> M1["inventory-service"]
+        API_Gateway --> M2["procurement-service"]
+        API_Gateway --> M3["erp-central-service"]
+        API_Gateway --> M4["mes-service"]
+        API_Gateway --> M5["wms-service"]
+        API_Gateway --> M6["tms-service"]
+        API_Gateway --> M7["crm-service"]
+        API_Gateway --> M8["dealer-portal-service"]
+        API_Gateway --> M9["ecommerce-service"]
+        API_Gateway --> M10["hrms-service"]
+        API_Gateway --> M11["payroll-service"]
+        API_Gateway --> M12["accounting-service"]
+        API_Gateway --> M13["qms-service"]
+        API_Gateway --> M14["bi-service"]
+    end
+
+    %% Infrastructure Data Layer
+    subgraph "Data & Event Infrastructure (Docker)"
+        DB[("PostgreSQL<br/>Shared/Isolated Schemas")]
+        Kafka[["Apache Kafka<br/>Event Bus"]]
+    end
+
+    %% Connections to DB
+    M1 & M2 & M3 & M4 & M5 & M6 & M7 -->|"Reads/Writes"| DB
+    M8 & M9 & M10 & M11 & M12 & M13 & M14 -->|"Reads/Writes"| DB
+    
+    %% Connections to Kafka
+    M1 & M2 & M3 & M4 & M5 & M6 & M7 -->|"Publishes/Subscribes Events"| Kafka
+    M8 & M9 & M10 & M11 & M12 & M13 & M14 -->|"Publishes/Subscribes Events"| Kafka
+
+    %% Python AI Service
+    subgraph "AI Analytics Layer (Python)"
+        AIBrain["ai-analytics-service<br/>FastAPI + Confluent Kafka"]
+    end
+
+    %% AI to Infra and External
+    Kafka -->|"Streams Domain Events"| AIBrain
+    AIBrain -->|"Prompt & Event Data"| Gemini
+```
+
 ## 1. Domain-Driven Design (DDD) Strategy
 This ERP is strictly modeled using Domain-Driven Design. Instead of having a single massive database where tables are tangled together with foreign keys, the business is separated into **Bounded Contexts**.
 
