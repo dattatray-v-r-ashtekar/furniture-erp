@@ -7,49 +7,49 @@ This document outlines the high-level architecture of the Furniture Manufacturin
 ```mermaid
 graph TD
     %% External Actors
-    User([Factory Worker / Admin])
-    WebUI[Frontend Dashboard\n(Vanilla JS SPA)]
-    Gemini([Google Gemini API])
+    User(["Factory Worker / Admin"])
+    WebUI["Frontend Dashboard<br/>(Vanilla JS SPA)"]
+    Gemini(["Google Gemini API"])
 
     %% UI to Backend
     User -->|Interacts| WebUI
-    WebUI -->|REST API| API_Gateway{Monolith Runner\nor K8s Gateway}
+    WebUI -->|"REST API"| API_Gateway{"Monolith Runner<br/>or K8s Gateway"}
 
     %% Backend Services (Java)
     subgraph "Core Java Microservices (Spring Boot)"
-        API_Gateway --> MES[mes-service]
-        API_Gateway --> INV[inventory-service]
-        API_Gateway --> PROC[procurement-service]
-        API_Gateway --> ERP[erp-central-service]
-        API_Gateway --> Others[10 Other Microservices...]
+        API_Gateway --> MES["mes-service"]
+        API_Gateway --> INV["inventory-service"]
+        API_Gateway --> PROC["procurement-service"]
+        API_Gateway --> ERP["erp-central-service"]
+        API_Gateway --> Others["10 Other Microservices..."]
     end
 
     %% Infrastructure Data Layer
     subgraph "Data & Event Infrastructure (Docker)"
-        DB[(PostgreSQL\nShared/Isolated Schemas)]
-        Kafka[[Apache Kafka\nEvent Bus]]
-        Redis[(Redis\nCache)]
+        DB[("PostgreSQL<br/>Shared/Isolated Schemas")]
+        Kafka[["Apache Kafka<br/>Event Bus"]]
+        Redis[("Redis<br/>Cache")]
     end
 
     %% Java to Infra Connections
-    MES -->|Reads/Writes| DB
-    INV -->|Reads/Writes| DB
-    PROC -->|Reads/Writes| DB
-    ERP -->|Reads/Writes| DB
+    MES -->|"Reads/Writes"| DB
+    INV -->|"Reads/Writes"| DB
+    PROC -->|"Reads/Writes"| DB
+    ERP -->|"Reads/Writes"| DB
     
-    MES -->|Publishes/Subscribes Events| Kafka
-    INV -->|Publishes/Subscribes Events| Kafka
-    PROC -->|Publishes/Subscribes Events| Kafka
-    ERP -->|Publishes/Subscribes Events| Kafka
+    MES -->|"Publishes/Subscribes Events"| Kafka
+    INV -->|"Publishes/Subscribes Events"| Kafka
+    PROC -->|"Publishes/Subscribes Events"| Kafka
+    ERP -->|"Publishes/Subscribes Events"| Kafka
 
     %% Python AI Service
     subgraph "AI Analytics Layer (Python)"
-        AIBrain[ai-analytics-service\nFastAPI + Confluent Kafka]
+        AIBrain["ai-analytics-service<br/>FastAPI + Confluent Kafka"]
     end
 
     %% AI to Infra and External
-    Kafka -->|Streams Domain Events| AIBrain
-    AIBrain -->|Prompt & Event Data| Gemini
+    Kafka -->|"Streams Domain Events"| AIBrain
+    AIBrain -->|"Prompt & Event Data"| Gemini
 ```
 
 ## Architecture Explanation
