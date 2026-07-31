@@ -1,4 +1,0 @@
-com\furniture\erp\domain\entity\BaseEntity.class
-com\furniture\erp\domain\entity\AggregateRoot.class
-com\furniture\erp\domain\event\DomainEvent.class
-com\furniture\erp\domain\event\publisher\DomainEventPublisher.class

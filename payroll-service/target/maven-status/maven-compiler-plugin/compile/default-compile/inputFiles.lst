@@ -1,8 +1,0 @@
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\application\service\SalarySlipService.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\domain\entity\SalarySlip.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\domain\entity\TaxDeduction.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\domain\event\SalaryDisbursedEvent.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\infrastructure\messaging\KafkaDomainEventPublisher.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\infrastructure\repository\SalarySlipRepository.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\infrastructure\rest\SalarySlipController.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\payroll-service\src\main\java\com\furniture\erp\payroll\PayrollServiceApplication.java

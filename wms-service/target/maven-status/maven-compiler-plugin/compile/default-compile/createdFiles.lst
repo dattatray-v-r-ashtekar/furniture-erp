@@ -1,9 +1,0 @@
-com\furniture\erp\wms\infrastructure\repository\WarehouseBinRepository.class
-com\furniture\erp\wms\WmsServiceApplication.class
-com\furniture\erp\wms\application\service\WarehouseBinService.class
-com\furniture\erp\wms\domain\entity\WarehouseBin.class
-com\furniture\erp\wms\infrastructure\messaging\KafkaDomainEventPublisher.class
-com\furniture\erp\wms\infrastructure\rest\WarehouseBinController.class
-com\furniture\erp\wms\domain\entity\BinMovement.class
-com\furniture\erp\wms\infrastructure\rest\CreateRequest.class
-com\furniture\erp\wms\domain\event\BinCapacityReachedEvent.class

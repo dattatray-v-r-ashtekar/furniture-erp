@@ -8,28 +8,23 @@ This project is built using a **Domain-Driven Design (DDD)** and **Event-Driven 
 Because manufacturing, warehouse, logistics, and sales are naturally separate business domains that evolve independently, this architecture ensures the system scales easily from a single factory to multiple factories, warehouses, and dealer networks without requiring major redesigns.
 
 ### Technology Stack
-- **Language**: Java 21
-- **Framework**: Spring Boot 3.3.0
+- **Language**: Java 21 & Python 3
+- **Frameworks**: Spring Boot 3.3.0, FastAPI
 - **Database**: PostgreSQL (Shared/Dedicated schemas per service)
 - **Messaging/Event Bus**: Apache Kafka & Zookeeper
 - **Caching**: Redis
 - **Security**: Keycloak
-- **Containerization**: Docker & Docker Compose
+- **AI Integration**: Google Gemini API
+- **Frontend UI**: Pure HTML5, Vanilla JavaScript, CSS Glassmorphism
 - **Build Tool**: Maven (Multi-module Monorepo)
-
-*(Future Kubernetes/EKS, NGINX Ingress, ArgoCD, Prometheus, Grafana, ELK, OpenTelemetry, GitHub Actions, and SonarQube integrations are intended for the deployment pipeline).*
 
 ---
 
 ## System Modules
 
-The project consists of 14 core microservices and 2 shared libraries within a single Maven Monorepo:
+The project consists of 14 core Java microservices, 1 Python AI microservice, 1 UI frontend, and a local Monolith Runner.
 
-### Shared Libraries
-1. `common-domain`: Contains the base Domain-Driven Design classes (`AggregateRoot`, `BaseEntity`, `DomainEvent`).
-2. `common-messaging`: Contains the Kafka interfaces and publishers for cross-service communication.
-
-### Core Microservices
+### 1. Core Microservices (Java / Spring Boot)
 
 | Module | Port | Description |
 | :--- | :--- | :--- |
@@ -48,6 +43,15 @@ The project consists of 14 core microservices and 2 shared libraries within a si
 | `qms-service` | `8093` | Quality Management: Defect tracking and inspection. |
 | `bi-service` | `8094` | Business Intelligence: KPI reports and dashboards. |
 
+### 2. The AI Brain (Python / FastAPI)
+- **`ai-analytics-service` (Port 8095)**: A Python microservice that listens to the Kafka event stream in real-time. When an event fires (e.g., `ProductionOrderCreatedEvent`), it sends the data to the **Google Gemini API** to generate actionable business insights, predictive maintenance alerts, and supply chain routing optimizations.
+
+### 3. The Frontend Dashboard
+- **`furniture-erp-ui`**: A Unified Enterprise Command Center built as a Single Page Application (SPA). It uses a premium dark-mode, glassmorphism design and makes dynamic REST API calls to the backend microservices.
+
+### 4. Local Deployment Monolith (Low RAM)
+- **`erp-monolith-runner` (Port 8080)**: For cloud deployments, you would deploy the 14 microservices individually. However, for local testing on a laptop, this module combines all 14 domains into a single Tomcat process. It uses only ~1GB of RAM while keeping the original microservice codebase 100% untouched.
+
 ---
 
 ## Getting Started
@@ -56,45 +60,32 @@ The project consists of 14 core microservices and 2 shared libraries within a si
 - JDK 21
 - Maven 3.8+
 - Docker & Docker Compose
+- Google Gemini API Key
 
-### 1. Start the Infrastructure
-The system relies on a local infrastructure stack (PostgreSQL, Kafka, Redis, Keycloak). Start it using Docker Compose:
-
+### 1. Build the Application Code
+Before running Docker, you must compile the Java `.jar` files locally.
 ```bash
-# From the root directory
-docker-compose up -d
-```
-*Note: Wait a few moments for Kafka and Postgres to fully initialize.*
-
-### 2. Build the Project
-Compile the entire 14-service monorepo using Maven:
-
-```bash
-# Skip tests for a faster build
 mvn clean install -DskipTests
 ```
 
-### 3. Run a Microservice
-You can run any of the microservices individually using the Spring Boot Maven plugin. They will automatically connect to the local Postgres database (`erp_db`) and the Kafka broker on `localhost:9092`.
-
+### 2. Set your AI Key
 ```bash
-# Example: Running the Inventory Service
-mvn spring-boot:run -pl inventory-service
-
-# Example: Running the Manufacturing Execution System (MES)
-mvn spring-boot:run -pl mes-service
+export GEMINI_API_KEY="your-gemini-key-here"
+# Windows PowerShell: $env:GEMINI_API_KEY="your-gemini-key-here"
 ```
 
----
+### 3. Run in Docker (Option A: Monolith Mode - Recommended for Laptops)
+To run all 14 services inside a single low-memory Docker container alongside your infrastructure and AI Brain:
+```bash
+docker-compose up --build -d
+```
+*Note: The monolith runs on port `8081`.*
 
-## Domain-Driven Design & Event-Driven Workflows
+### 3. Run in Docker (Option B: True Microservices Mode)
+If you have a powerful machine (>32GB RAM) and want to simulate a full Kubernetes distributed deployment, you can run all 14 microservices as 14 separate Docker containers simultaneously:
+```bash
+docker-compose -f docker-compose-microservices.yml up --build -d
+```
 
-Each microservice is entirely self-contained and communicates with other services asynchronously via Kafka domain events.
-
-For example, the Manufacturing Execution flow:
-1. `mes-service` starts a `WorkOrder` and fires a `MaterialConsumptionRequestedEvent`.
-2. `inventory-service` (in the future) listens to this event to deduct raw materials (e.g., wood) from the database.
-3. Once the furniture is built, `mes-service` fires a `ProductionCompletedEvent`.
-4. `inventory-service` listens to this event to automatically add the finished good to the stock.
-
-By leveraging Kafka for these transitions, we guarantee that the warehouse, factory, and purchasing teams' systems operate smoothly and without blocking each other.
+### 4. Launch the Frontend UI
+Navigate to the `furniture-erp-ui` folder and double-click `index.html` to open the Enterprise Command Center in your browser. From there, you can interact with the system and watch the AI Brain analyze your events in real-time!

@@ -1,7 +1,0 @@
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\application\service\InventoryService.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\domain\entity\StockItem.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\domain\event\StockUpdatedEvent.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\infrastructure\messaging\KafkaDomainEventPublisher.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\infrastructure\repository\StockItemRepository.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\infrastructure\rest\InventoryController.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\inventory-service\src\main\java\com\furniture\erp\inventory\InventoryServiceApplication.java

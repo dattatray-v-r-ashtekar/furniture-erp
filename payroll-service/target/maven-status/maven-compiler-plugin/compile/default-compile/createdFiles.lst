@@ -1,9 +1,0 @@
-com\furniture\erp\payroll\application\service\SalarySlipService.class
-com\furniture\erp\payroll\infrastructure\rest\CreateRequest.class
-com\furniture\erp\payroll\domain\entity\SalarySlip.class
-com\furniture\erp\payroll\infrastructure\messaging\KafkaDomainEventPublisher.class
-com\furniture\erp\payroll\domain\entity\TaxDeduction.class
-com\furniture\erp\payroll\PayrollServiceApplication.class
-com\furniture\erp\payroll\infrastructure\repository\SalarySlipRepository.class
-com\furniture\erp\payroll\domain\event\SalaryDisbursedEvent.class
-com\furniture\erp\payroll\infrastructure\rest\SalarySlipController.class

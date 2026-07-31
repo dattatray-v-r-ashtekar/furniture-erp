@@ -1,0 +1,289 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: erp-postgres
+    environment:
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_password
+      POSTGRES_DB: erp_db
+    ports:
+      - "5432:5432"
+    networks:
+      - erp-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: erp-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - erp-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: erp-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - erp-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: erp-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - erp-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    container_name: erp-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+    networks:
+      - erp-network
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    container_name: inventory-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  procurement-service:
+    build:
+      context: ./procurement-service
+    container_name: procurement-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  erp-central-service:
+    build:
+      context: ./erp-central-service
+    container_name: erp-central-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  mes-service:
+    build:
+      context: ./mes-service
+    container_name: mes-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  wms-service:
+    build:
+      context: ./wms-service
+    container_name: wms-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  tms-service:
+    build:
+      context: ./tms-service
+    container_name: tms-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  crm-service:
+    build:
+      context: ./crm-service
+    container_name: crm-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  dealer-portal-service:
+    build:
+      context: ./dealer-portal-service
+    container_name: dealer-portal-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  ecommerce-service:
+    build:
+      context: ./ecommerce-service
+    container_name: ecommerce-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  hrms-service:
+    build:
+      context: ./hrms-service
+    container_name: hrms-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  payroll-service:
+    build:
+      context: ./payroll-service
+    container_name: payroll-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  accounting-service:
+    build:
+      context: ./accounting-service
+    container_name: accounting-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8092:8092"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  qms-service:
+    build:
+      context: ./qms-service
+    container_name: qms-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8093:8093"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  bi-service:
+    build:
+      context: ./bi-service
+    container_name: bi-service
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8094:8094"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  ai-analytics-service:
+    build:
+      context: ./ai-analytics-service
+    container_name: ai-analytics-service
+    depends_on:
+      - kafka
+    ports:
+      - "8095:8095"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    networks:
+      - erp-network
+
+networks:
+  erp-network:
+    driver: bridge

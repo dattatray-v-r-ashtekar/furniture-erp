@@ -1,9 +1,0 @@
-com\furniture\erp\qms\domain\entity\DefectLog.class
-com\furniture\erp\qms\QmsServiceApplication.class
-com\furniture\erp\qms\domain\event\InspectionFailedEvent.class
-com\furniture\erp\qms\application\service\QualityInspectionService.class
-com\furniture\erp\qms\domain\entity\QualityInspection.class
-com\furniture\erp\qms\infrastructure\repository\QualityInspectionRepository.class
-com\furniture\erp\qms\infrastructure\rest\CreateRequest.class
-com\furniture\erp\qms\infrastructure\rest\QualityInspectionController.class
-com\furniture\erp\qms\infrastructure\messaging\KafkaDomainEventPublisher.class

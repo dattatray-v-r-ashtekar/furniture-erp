@@ -1,8 +1,0 @@
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\application\service\DashboardReportService.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\BiServiceApplication.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\domain\entity\DashboardReport.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\domain\entity\KpiMetric.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\domain\event\ReportGeneratedEvent.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\infrastructure\messaging\KafkaDomainEventPublisher.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\infrastructure\repository\DashboardReportRepository.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\bi-service\src\main\java\com\furniture\erp\bi\infrastructure\rest\DashboardReportController.java

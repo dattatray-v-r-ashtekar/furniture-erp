@@ -1,8 +1,0 @@
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\AccountingServiceApplication.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\application\service\GeneralLedgerService.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\domain\entity\GeneralLedger.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\domain\entity\JournalEntry.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\domain\event\LedgerBalancedEvent.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\infrastructure\messaging\KafkaDomainEventPublisher.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\infrastructure\repository\GeneralLedgerRepository.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\accounting-service\src\main\java\com\furniture\erp\accounting\infrastructure\rest\GeneralLedgerController.java

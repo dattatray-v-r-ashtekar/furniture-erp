@@ -1,9 +1,0 @@
-com\furniture\erp\crm\application\service\CustomerProfileService.class
-com\furniture\erp\crm\domain\entity\InteractionLog.class
-com\furniture\erp\crm\domain\event\CustomerConvertedEvent.class
-com\furniture\erp\crm\infrastructure\repository\CustomerProfileRepository.class
-com\furniture\erp\crm\infrastructure\messaging\KafkaDomainEventPublisher.class
-com\furniture\erp\crm\infrastructure\rest\CreateRequest.class
-com\furniture\erp\crm\infrastructure\rest\CustomerProfileController.class
-com\furniture\erp\crm\CrmServiceApplication.class
-com\furniture\erp\crm\domain\entity\CustomerProfile.class

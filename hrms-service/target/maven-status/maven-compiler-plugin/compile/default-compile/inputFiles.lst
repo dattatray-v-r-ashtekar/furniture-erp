@@ -1,8 +1,0 @@
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\application\service\EmployeeRecordService.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\domain\entity\AttendanceLog.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\domain\entity\EmployeeRecord.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\domain\event\ShiftAssignedEvent.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\HrmsServiceApplication.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\infrastructure\messaging\KafkaDomainEventPublisher.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\infrastructure\repository\EmployeeRecordRepository.java
-C:\Users\datta\.gemini\antigravity\scratch\furniture-erp\hrms-service\src\main\java\com\furniture\erp\hrms\infrastructure\rest\EmployeeRecordController.java

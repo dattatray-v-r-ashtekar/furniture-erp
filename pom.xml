@@ -35,6 +35,7 @@
         <module>accounting-service</module>
         <module>qms-service</module>
         <module>bi-service</module>
+        <module>erp-monolith-runner</module>
     </modules>
 
     <properties>
