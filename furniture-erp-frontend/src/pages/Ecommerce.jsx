@@ -1,0 +1,131 @@
+import React, { useState } from 'react';
+import { ShoppingCart, CreditCard, CheckCircle } from 'lucide-react';
+
+const products = [
+  { id: 'SOFA-LEATHER', name: 'Premium Leather Sofa', price: 1299.99, img: '🛋️', desc: 'Handcrafted Italian leather with ergonomic support.' },
+  { id: 'TABLE-OAK', name: 'Custom Oak Dining Table', price: 899.50, img: '🪑', desc: 'Solid wood dining table, built to order.' },
+  { id: 'CHAIR-OFFICE', name: 'Ergo Office Chair', price: 349.00, img: '💺', desc: 'Breathable mesh back with lumbar support.' }
+];
+
+export default function Ecommerce() {
+  const [cart, setCart] = useState([]);
+  const [checkoutStatus, setCheckoutStatus] = useState(null);
+  const [responseLog, setResponseLog] = useState(null);
+
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+  };
+
+  const getCartTotal = () => {
+    return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+  };
+
+  const handleCheckout = async () => {
+    if (cart.length === 0) return;
+    setCheckoutStatus('processing');
+    
+    // Simulate real E2E backend call to Monolith API on 8081
+    try {
+      const payload = {
+        cartId: `CART-${Math.floor(Math.random() * 10000)}`,
+        paymentMethod: "CREDIT_CARD",
+        total: parseFloat(getCartTotal())
+      };
+      
+      const response = await fetch('http://localhost:8081/api/v1/ecommerce/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      setResponseLog(data);
+      setCheckoutStatus('success');
+      setCart([]); // Empty cart on success
+    } catch (error) {
+      console.error(error);
+      setCheckoutStatus('error');
+      setResponseLog({ error: 'Failed to reach http://localhost:8081. Ensure backend is running.' });
+    }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', height: '100%' }}>
+      {/* Product Catalog */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Featured Products</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '16px' }}>
+          {products.map(p => (
+            <div key={p.id} className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ fontSize: '4rem', textAlign: 'center' }}>{p.img}</div>
+              <h3 style={{ fontSize: '1.1rem' }}>{p.name}</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{p.desc}</p>
+              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--accent-primary)' }}>${p.price.toFixed(2)}</span>
+                <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => addToCart(p)}>
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Shopping Cart */}
+      <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: 'fit-content', position: 'sticky', top: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+          <ShoppingCart size={24} color="var(--accent-primary)" />
+          <h2 style={{ fontSize: '1.2rem' }}>Your Cart</h2>
+        </div>
+
+        {cart.length === 0 ? (
+          <div style={{ padding: '32px 0', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            Your cart is empty.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {cart.map((item, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid var(--border-glass)' }}>
+                <span>{item.name}</span>
+                <span>${item.price.toFixed(2)}</span>
+              </div>
+            ))}
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px', fontWeight: 'bold', fontSize: '1.2rem' }}>
+              <span>Total:</span>
+              <span className="gradient-text">${getCartTotal()}</span>
+            </div>
+
+            <button 
+              className="btn btn-primary" 
+              style={{ marginTop: '24px', width: '100%', padding: '12px' }}
+              onClick={handleCheckout}
+              disabled={checkoutStatus === 'processing'}
+            >
+              {checkoutStatus === 'processing' ? 'Processing...' : <><CreditCard size={18} /> Checkout Now</>}
+            </button>
+          </div>
+        )}
+
+        {/* Success / Error Log */}
+        {checkoutStatus === 'success' && (
+          <div className="animate-fade-in" style={{ marginTop: '24px', padding: '16px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--status-success)', borderRadius: 'var(--radius-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-success)', marginBottom: '8px', fontWeight: 'bold' }}>
+              <CheckCircle size={18} /> Order Placed!
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Event <strong>B2CPaymentReceivedEvent</strong> published to Kafka.</p>
+            <pre style={{ marginTop: '12px', fontSize: '0.75rem', background: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '4px', overflowX: 'auto' }}>
+              {JSON.stringify(responseLog, null, 2)}
+            </pre>
+          </div>
+        )}
+
+        {checkoutStatus === 'error' && (
+           <div className="animate-fade-in" style={{ marginTop: '24px', padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--status-error)', borderRadius: 'var(--radius-sm)' }}>
+             <p style={{ color: 'var(--status-error)', fontSize: '0.85rem' }}>{responseLog?.error}</p>
+           </div>
+        )}
+      </div>
+    </div>
+  );
+}

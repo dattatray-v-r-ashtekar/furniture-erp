@@ -1,6 +1,10 @@
 # Comprehensive Manual Test Plan
 
-This document outlines step-by-step instructions to manually test all 14 microservices and the Python AI Analytics Brain. You can use tools like **Postman**, **cURL**, or the **Frontend UI** to execute these.
+This document outlines step-by-step instructions to manually test all 14 microservices and the Python AI Analytics Brain. 
+
+**Testing Methods:**
+1. **Frontend React UI:** You can test the core workflows (E-commerce, Manufacturing, Inventory, Accounting) visually by navigating to `http://localhost:5173`.
+2. **Postman / cURL:** You can manually trigger the raw REST APIs for any of the 14 modules using the steps below.
 
 ## Pre-requisites
 1. Ensure the system is running locally using Docker:
@@ -9,6 +13,10 @@ This document outlines step-by-step instructions to manually test all 14 microse
    ```
 2. Wait 30 seconds for Kafka and PostgreSQL to fully initialize.
 3. Because the system uses Event-Driven Architecture, executing a test case in one service may automatically trigger data changes in another service!
+
+> **🚨 PORT CONFIGURATION NOTE 🚨**
+> The manual test cases below list the individual microservice ports (e.g., `8082`, `8084`). These ports only work if you started the system in **Microservices Mode** (`docker-compose -f docker-compose-microservices.yml up -d`). 
+> If you started the system in **Monolith Mode** (`docker-compose up -d`), you must replace all the ports in the URLs below with `8081` (the single monolith port).
 
 ---
 
