@@ -49,9 +49,14 @@ docker-compose up --build -d
 * **What happens**: The UI sends a request to the `ecommerce-service` which processes the payment and fires `B2CPaymentReceivedEvent`.
 
 ### Step 2: Verify Finance & Sales Orchestration
-* **Verify Accounting**: Navigate to the **Finance Ledger** tab in the UI. Enter the UUID returned from the checkout to see the revenue entry.
-* **Verify Sales**: The `erp-central-service` caught the event and fired `SalesOrderCreatedEvent`. 
-
+* **Verify Accounting (Finance Ledger)**: 
+  - Navigate to the **Finance Ledger** tab (`/accounting`). 
+  - Click **Refresh** (or view the list). You will see all real-time credit ledger entries (e.g. ₹45,000.00 / ₹75,000.00) generated automatically via Kafka event.
+  - You can also type or paste any Ledger UUID or Account Name in the search box at the top to filter specifically.
+* **Verify Sales (ERP Central)**: 
+  - Navigate to the **Sales Orders (ERP)** tab (`/sales`).
+  - Click **Refresh** to see the official Sales Order created by `erp-central-service` in response to the Kafka payment event.
+  - Or via API: `GET http://localhost:8081/api/v1/erp/sales-orders`.
 ### Step 3: Verify the Factory Floor
 * **Verify MES**: Navigate to the **Manufacturing** tab in the UI. You can lookup the generated WorkOrder to see its assembly routing.
 

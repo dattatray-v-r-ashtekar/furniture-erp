@@ -3,12 +3,13 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { 
   ShoppingCart, Briefcase, Package, Factory, 
   Warehouse, Truck, Users, Activity, 
-  Calculator, SearchCheck, BarChart3 
+  Calculator, SearchCheck, BarChart3, ShoppingBag 
 } from 'lucide-react';
 import './index.css';
 
 const navItems = [
   { path: '/', label: 'Storefront (B2C)', icon: ShoppingCart },
+  { path: '/sales', label: 'Sales Orders (ERP)', icon: ShoppingBag },
   { path: '/dealer', label: 'Dealer Portal (B2B)', icon: Briefcase },
   { path: '/mes', label: 'Manufacturing', icon: Factory },
   { path: '/inventory', label: 'Inventory', icon: Package },
