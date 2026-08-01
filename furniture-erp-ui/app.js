@@ -1,3 +1,10 @@
+// --- CONFIGURATION ---
+// Set to true if running 'docker-compose up' (Monolith Mode - low RAM)
+// Set to false if running 'docker-compose-microservices.yml' (High RAM)
+const USE_MONOLITH_MODE = true; 
+const MONOLITH_PORT = 8081;
+// ---------------------
+
 const modules = [
     { id: 'inventory', name: 'Inventory', port: 8081, path: '/api/v1/inventory/items', payload: { skuCode: "WOOD-01", quantity: 100 }, fieldLabel: 'SKU Code' },
     { id: 'procurement', name: 'Procurement', port: 8082, path: '/api/v1/procurement/orders', payload: { vendorId: "VND-123" }, fieldLabel: 'Vendor ID' },
@@ -38,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Note: For a real cross-origin request from a file:// URL to localhost, CORS must be enabled on the Spring Boot backend. 
         // For demonstration, we build the UI to make the exact correct REST calls.
-        const apiUrl = `http://localhost:${mod.port}${mod.path}`;
+        const targetPort = USE_MONOLITH_MODE ? MONOLITH_PORT : mod.port;
+        const apiUrl = `http://localhost:${targetPort}${mod.path}`;
 
         // Build View
         contentArea.innerHTML = `
@@ -89,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         requestBody[payloadKey] = inputValue;
 
         try {
-            const response = await fetch(`http://localhost:${mod.port}${mod.path}`, {
+            const targetPort = USE_MONOLITH_MODE ? MONOLITH_PORT : mod.port;
+            const response = await fetch(`http://localhost:${targetPort}${mod.path}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
@@ -113,7 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
         } catch (error) {
-            logArea.innerHTML = `<span style="color:#ef4444">Connection Error.</span>\nIs the Spring Boot service running on port ${mod.port}?\nEnsure @CrossOrigin is enabled on the Controller.`;
+            const targetPort = USE_MONOLITH_MODE ? MONOLITH_PORT : mod.port;
+            logArea.innerHTML = `<span style="color:#ef4444">Connection Error.</span>\nIs the backend running on port ${targetPort}?\nEnsure @CrossOrigin is enabled.`;
             console.error(error);
         }
     };

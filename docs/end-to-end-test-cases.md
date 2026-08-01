@@ -6,6 +6,36 @@ In these tests, you will trigger an action at the very beginning of a business p
 
 ---
 
+## 🛠️ Environment Setup & UI Configuration
+
+Before running the E2E tests, you must start the environment and configure your API keys. You can test everything via the **Frontend UI**!
+
+### Step 1: Set the Gemini AI Key
+The Python AI Brain requires a Google Gemini API key to generate insights.
+**In Windows PowerShell:**
+```powershell
+$env:GEMINI_API_KEY="your-actual-api-key-here"
+```
+**In Linux/Mac Bash:**
+```bash
+export GEMINI_API_KEY="your-actual-api-key-here"
+```
+
+### Step 2: Start the System (Monolith Mode)
+To save RAM on your local machine, I have configured the Frontend UI to automatically route all traffic to the Monolith Runner (which runs all 14 services inside a single lightweight process on port `8081`).
+```bash
+docker-compose up --build -d
+```
+*(Note: Wait about 45-60 seconds for the Java Monolith, Postgres, and Kafka to fully initialize).*
+
+### Step 3: Launch the Frontend UI
+1. Navigate to the `furniture-erp-ui` folder on your computer.
+2. Double-click the `index.html` file to open it in Google Chrome or Edge.
+3. You will see the **Enterprise Command Center**. 
+4. You can click on the tabs on the left (e.g., *E-Commerce*, *Procurement*, *HRMS*) and click the **"Submit to Backend"** buttons to trigger the scenarios below!
+
+---
+
 ## Scenario 1: The B2C Custom Furniture Lifecycle
 **Business Story**: An everyday consumer visits the public website and orders a custom-built dining table. Since it's custom, it doesn't exist in the warehouse yet. The factory must build it, log the financials, and hand it to the delivery trucks.
 
