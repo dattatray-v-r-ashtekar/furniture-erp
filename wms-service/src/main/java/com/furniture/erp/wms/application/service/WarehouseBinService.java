@@ -7,6 +7,7 @@ import com.furniture.erp.wms.domain.entity.BinMovement;
 import com.furniture.erp.wms.domain.event.BinCapacityReachedEvent;
 import com.furniture.erp.wms.infrastructure.repository.WarehouseBinRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class WarehouseBinService {
     public WarehouseBin getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<WarehouseBin> getAll() {
+        return repository.findAll();
     }
 }

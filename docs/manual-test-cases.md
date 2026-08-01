@@ -37,14 +37,14 @@ This document outlines step-by-step instructions to manually test all 14 microse
 ## 3. Core Sales (`erp-central-service`)
 **Objective**: Test creating a central sales order.
 * **Action**: `POST http://localhost:8083/api/v1/sales/orders`
-* **Body**: `{"customerId": "C-999", "items": [{"sku": "SOFA-LEATHER", "qty": 10}]}`
+* **Body**: `{"customerId": "C-999", "items": [{"sku": "BED-KING", "qty": 10}]}`
 * **Expected Result**: HTTP 201 Created.
 * **Verification**: Check the console logs of `mes-service`. It should have received a `SalesOrderCreatedEvent` from Kafka and automatically queued a manufacturing job.
 
 ## 4. Manufacturing Execution (`mes-service`)
 **Objective**: Test starting a factory floor job.
 * **Action**: `POST http://localhost:8084/api/v1/mes/work-orders`
-* **Body**: `{"productId": "SOFA-LEATHER", "quantity": 10, "assemblyLine": "LINE-A"}`
+* **Body**: `{"productId": "BED-KING", "quantity": 10, "assemblyLine": "LINE-A"}`
 * **Expected Result**: HTTP 201 Created.
 * **Verification**: The `ai-analytics-service` should catch the `ProductionOrderCreatedEvent` and prompt Gemini to estimate factory completion time.
 
@@ -78,8 +78,8 @@ This document outlines step-by-step instructions to manually test all 14 microse
 
 ## 9. B2C E-Commerce (`ecommerce-service`)
 **Objective**: Test consumer cart checkout.
-* **Action**: `POST http://localhost:8089/api/v1/ecommerce/checkout`
-* **Body**: `{"cartId": "CART-ABC", "paymentMethod": "CREDIT_CARD", "total": 1299.99}`
+* **Action**: `POST http://localhost:8081/api/v1/ecommerce/orders`
+* **Body**: `{"referenceCode": "CART-ABC"}`
 * **Expected Result**: HTTP 201 Created.
 * **Verification**: `accounting-service` should automatically record a revenue entry via Kafka.
 

@@ -99,4 +99,8 @@ public class MesService {
         return productionOrderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Production Order not found: " + orderId));
     }
+
+    public java.util.List<ProductionOrder> getAllOrders() {
+        return productionOrderRepository.findAll();
+    }
 }

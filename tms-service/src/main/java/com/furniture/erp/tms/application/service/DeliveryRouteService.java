@@ -7,6 +7,7 @@ import com.furniture.erp.tms.domain.entity.DeliveryStop;
 import com.furniture.erp.tms.domain.event.RouteStartedEvent;
 import com.furniture.erp.tms.infrastructure.repository.DeliveryRouteRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class DeliveryRouteService {
     public DeliveryRoute getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<DeliveryRoute> getAll() {
+        return repository.findAll();
     }
 }

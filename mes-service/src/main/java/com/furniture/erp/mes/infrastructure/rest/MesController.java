@@ -60,6 +60,11 @@ public class MesController {
     public ResponseEntity<ProductionOrder> getOrder(@PathVariable UUID orderId) {
         return ResponseEntity.ok(mesService.getOrder(orderId));
     }
+
+    @GetMapping
+    public ResponseEntity<java.util.List<ProductionOrder>> getAllOrders() {
+        return ResponseEntity.ok(mesService.getAllOrders());
+    }
 }
 
 record PlanProductionRequest(String productSku, Integer targetQuantity) {}

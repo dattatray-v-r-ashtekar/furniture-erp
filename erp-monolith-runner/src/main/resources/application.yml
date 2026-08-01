@@ -1,7 +1,12 @@
 server:
   port: 8080
 
+logging:
+  level:
+    org.springframework.context.annotation: DEBUG
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: erp-monolith-runner
   datasource:
@@ -20,9 +25,11 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: erp-monolith-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"

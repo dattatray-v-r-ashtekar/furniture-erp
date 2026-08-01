@@ -57,4 +57,8 @@ public class InventoryService {
         return stockItemRepository.findBySkuCode(skuCode)
                 .orElseThrow(() -> new IllegalArgumentException("Stock Item not found: " + skuCode));
     }
+
+    public java.util.List<StockItem> getAllStockItems() {
+        return stockItemRepository.findAll();
+    }
 }

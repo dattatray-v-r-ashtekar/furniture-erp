@@ -7,6 +7,7 @@ import com.furniture.erp.hrms.domain.entity.AttendanceLog;
 import com.furniture.erp.hrms.domain.event.ShiftAssignedEvent;
 import com.furniture.erp.hrms.infrastructure.repository.EmployeeRecordRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class EmployeeRecordService {
     public EmployeeRecord getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<EmployeeRecord> getAll() {
+        return repository.findAll();
     }
 }

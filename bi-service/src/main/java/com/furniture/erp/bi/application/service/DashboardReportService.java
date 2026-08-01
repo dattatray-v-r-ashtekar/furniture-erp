@@ -7,6 +7,7 @@ import com.furniture.erp.bi.domain.entity.KpiMetric;
 import com.furniture.erp.bi.domain.event.ReportGeneratedEvent;
 import com.furniture.erp.bi.infrastructure.repository.DashboardReportRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class DashboardReportService {
     public DashboardReport getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<DashboardReport> getAll() {
+        return repository.findAll();
     }
 }

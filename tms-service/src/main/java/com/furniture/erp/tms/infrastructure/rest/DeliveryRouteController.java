@@ -4,6 +4,7 @@ import com.furniture.erp.tms.application.service.DeliveryRouteService;
 import com.furniture.erp.tms.domain.entity.DeliveryRoute;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class DeliveryRouteController {
     @GetMapping("/{id}")
     public ResponseEntity<DeliveryRoute> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<DeliveryRoute>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 

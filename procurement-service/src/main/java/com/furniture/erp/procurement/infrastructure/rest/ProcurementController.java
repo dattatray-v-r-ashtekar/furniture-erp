@@ -46,6 +46,11 @@ public class ProcurementController {
     public ResponseEntity<PurchaseOrder> getOrder(@PathVariable UUID orderId) {
         return ResponseEntity.ok(procurementService.getOrder(orderId));
     }
+
+    @GetMapping
+    public ResponseEntity<java.util.List<PurchaseOrder>> getAllOrders() {
+        return ResponseEntity.ok(procurementService.getAllOrders());
+    }
 }
 
 record CreateOrderRequest(String vendorId) {}

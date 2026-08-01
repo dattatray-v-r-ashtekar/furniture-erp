@@ -7,6 +7,7 @@ import com.furniture.erp.crm.domain.entity.InteractionLog;
 import com.furniture.erp.crm.domain.event.CustomerConvertedEvent;
 import com.furniture.erp.crm.infrastructure.repository.CustomerProfileRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class CustomerProfileService {
     public CustomerProfile getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<CustomerProfile> getAll() {
+        return repository.findAll();
     }
 }

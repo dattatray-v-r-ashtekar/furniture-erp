@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { ShoppingCart, CreditCard, CheckCircle } from 'lucide-react';
 
 const products = [
-  { id: 'SOFA-LEATHER', name: 'Premium Leather Sofa', price: 1299.99, img: '🛋️', desc: 'Handcrafted Italian leather with ergonomic support.' },
-  { id: 'TABLE-OAK', name: 'Custom Oak Dining Table', price: 899.50, img: '🪑', desc: 'Solid wood dining table, built to order.' },
-  { id: 'CHAIR-OFFICE', name: 'Ergo Office Chair', price: 349.00, img: '💺', desc: 'Breathable mesh back with lumbar support.' }
+  { id: 'BED-KING', name: 'Luxury King Size Bed', price: 45000.00, img: '🛏️', desc: 'Solid teak wood frame with memory foam mattress.' },
+  { id: 'TABLE-OAK', name: 'Custom Oak Dining Table', price: 75000.50, img: '🪑', desc: 'Solid wood dining table, built to order.' },
+  { id: 'CHAIR-OFFICE', name: 'Ergo Office Chair', price: 12500.00, img: '💺', desc: 'Breathable mesh back with lumbar support.' }
 ];
 
 export default function Ecommerce() {
@@ -27,12 +27,10 @@ export default function Ecommerce() {
     // Simulate real E2E backend call to Monolith API on 8081
     try {
       const payload = {
-        cartId: `CART-${Math.floor(Math.random() * 10000)}`,
-        paymentMethod: "CREDIT_CARD",
-        total: parseFloat(getCartTotal())
+        referenceCode: `CUST-123-ORDER-${Date.now()}`
       };
       
-      const response = await fetch('http://localhost:8081/api/v1/ecommerce/checkout', {
+      const response = await fetch('http://localhost:8081/api/v1/ecommerce/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -61,7 +59,7 @@ export default function Ecommerce() {
               <h3 style={{ fontSize: '1.1rem' }}>{p.name}</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{p.desc}</p>
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--accent-primary)' }}>${p.price.toFixed(2)}</span>
+                <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--accent-primary)' }}>₹{p.price.toFixed(2)}</span>
                 <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => addToCart(p)}>
                   Add to Cart
                 </button>
@@ -87,13 +85,13 @@ export default function Ecommerce() {
             {cart.map((item, idx) => (
               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid var(--border-glass)' }}>
                 <span>{item.name}</span>
-                <span>${item.price.toFixed(2)}</span>
+                <span>₹{item.price.toFixed(2)}</span>
               </div>
             ))}
             
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px', fontWeight: 'bold', fontSize: '1.2rem' }}>
               <span>Total:</span>
-              <span className="gradient-text">${getCartTotal()}</span>
+              <span className="gradient-text">₹{getCartTotal()}</span>
             </div>
 
             <button 

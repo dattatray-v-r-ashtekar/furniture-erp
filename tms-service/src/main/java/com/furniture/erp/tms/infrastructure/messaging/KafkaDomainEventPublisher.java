@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("tmsKafkaDomainEventPublisher")
 public class KafkaDomainEventPublisher implements DomainEventPublisher<DomainEvent<?>> {
 
     private static final Logger log = LoggerFactory.getLogger(KafkaDomainEventPublisher.class);
@@ -24,3 +24,4 @@ public class KafkaDomainEventPublisher implements DomainEventPublisher<DomainEve
         kafkaTemplate.send(topic, domainEvent);
     }
 }
+

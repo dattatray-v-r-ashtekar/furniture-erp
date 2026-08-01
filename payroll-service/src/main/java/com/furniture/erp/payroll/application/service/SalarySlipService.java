@@ -7,6 +7,7 @@ import com.furniture.erp.payroll.domain.entity.TaxDeduction;
 import com.furniture.erp.payroll.domain.event.SalaryDisbursedEvent;
 import com.furniture.erp.payroll.infrastructure.repository.SalarySlipRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class SalarySlipService {
     public SalarySlip getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<SalarySlip> getAll() {
+        return repository.findAll();
     }
 }

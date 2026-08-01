@@ -4,6 +4,7 @@ import com.furniture.erp.hrms.application.service.EmployeeRecordService;
 import com.furniture.erp.hrms.domain.entity.EmployeeRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class EmployeeRecordController {
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeRecord> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<EmployeeRecord>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 

@@ -4,6 +4,7 @@ import com.furniture.erp.erpcentral.application.service.SalesOrderService;
 import com.furniture.erp.erpcentral.domain.entity.SalesOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class SalesOrderController {
     @GetMapping("/{id}")
     public ResponseEntity<SalesOrder> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<SalesOrder>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 

@@ -7,6 +7,7 @@ import com.furniture.erp.ecommerce.domain.entity.CartItem;
 import com.furniture.erp.ecommerce.domain.event.PaymentProcessedEvent;
 import com.furniture.erp.ecommerce.infrastructure.repository.OnlineOrderRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class OnlineOrderService {
     public OnlineOrder getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<OnlineOrder> getAll() {
+        return repository.findAll();
     }
 }

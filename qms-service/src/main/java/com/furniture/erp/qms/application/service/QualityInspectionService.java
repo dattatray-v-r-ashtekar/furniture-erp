@@ -7,6 +7,7 @@ import com.furniture.erp.qms.domain.entity.DefectLog;
 import com.furniture.erp.qms.domain.event.InspectionFailedEvent;
 import com.furniture.erp.qms.infrastructure.repository.QualityInspectionRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class QualityInspectionService {
     public QualityInspection getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<QualityInspection> getAll() {
+        return repository.findAll();
     }
 }

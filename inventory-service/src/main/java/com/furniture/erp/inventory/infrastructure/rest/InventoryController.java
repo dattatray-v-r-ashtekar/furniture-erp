@@ -39,6 +39,11 @@ public class InventoryController {
     public ResponseEntity<StockItem> getStock(@PathVariable String skuCode) {
         return ResponseEntity.ok(inventoryService.getStock(skuCode));
     }
+
+    @GetMapping("/items")
+    public ResponseEntity<java.util.List<StockItem>> getAllStockItems() {
+        return ResponseEntity.ok(inventoryService.getAllStockItems());
+    }
 }
 
 record CreateStockItemRequest(String skuCode, String description, String locationBin) {}

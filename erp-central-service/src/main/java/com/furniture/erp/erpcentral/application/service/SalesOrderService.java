@@ -7,6 +7,7 @@ import com.furniture.erp.erpcentral.domain.entity.SalesOrderLine;
 import com.furniture.erp.erpcentral.domain.event.SalesOrderCreatedEvent;
 import com.furniture.erp.erpcentral.infrastructure.repository.SalesOrderRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class SalesOrderService {
     public SalesOrder getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<SalesOrder> getAll() {
+        return repository.findAll();
     }
 }

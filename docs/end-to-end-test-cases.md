@@ -45,7 +45,7 @@ docker-compose up --build -d
 
 ### Step 1: The Customer Checks Out Online
 * **Tool**: React UI (Storefront B2C Tab)
-* **Action**: Click "Add to Cart" on the Premium Leather Sofa, then click **Checkout Now**.
+* **Action**: Click "Add to Cart" on the Luxury King Size Bed, then click **Checkout Now**.
 * **What happens**: The UI sends a request to the `ecommerce-service` which processes the payment and fires `B2CPaymentReceivedEvent`.
 
 ### Step 2: Verify Finance & Sales Orchestration
@@ -60,7 +60,7 @@ docker-compose up --build -d
 * **What happens**: MES fires `ProductionCompletedEvent`.
 
 ### Step 5: Verify Warehouse & Logistics
-* **Verify Inventory**: Navigate to the **Inventory** tab in the UI. Lookup `SOFA-LEATHER`. The stock should reflect the deduction from the sale.
+* **Verify Inventory**: Navigate to the **Inventory** tab in the UI. Lookup `BED-KING`. The stock should reflect the deduction from the sale.
 * **Verify Transport**: Check `tms-service` (`GET http://localhost:8086/api/v1/tms/routes`). You should see an auto-generated delivery route with a FedEx/UPS tracking label attached for the customer's address.
 
 ### Step 6: Verify the AI Brain

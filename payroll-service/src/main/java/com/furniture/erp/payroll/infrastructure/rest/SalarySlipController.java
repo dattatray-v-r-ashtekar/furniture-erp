@@ -4,6 +4,7 @@ import com.furniture.erp.payroll.application.service.SalarySlipService;
 import com.furniture.erp.payroll.domain.entity.SalarySlip;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class SalarySlipController {
     @GetMapping("/{id}")
     public ResponseEntity<SalarySlip> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<SalarySlip>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 

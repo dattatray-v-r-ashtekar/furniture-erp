@@ -7,6 +7,7 @@ import com.furniture.erp.dealerportal.domain.entity.WholesaleItem;
 import com.furniture.erp.dealerportal.domain.event.BulkDiscountAppliedEvent;
 import com.furniture.erp.dealerportal.infrastructure.repository.WholesaleOrderRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class WholesaleOrderService {
     public WholesaleOrder getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<WholesaleOrder> getAll() {
+        return repository.findAll();
     }
 }

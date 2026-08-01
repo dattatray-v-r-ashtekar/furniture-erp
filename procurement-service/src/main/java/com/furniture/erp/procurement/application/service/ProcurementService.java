@@ -67,4 +67,8 @@ public class ProcurementService {
         return purchaseOrderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Purchase Order not found: " + orderId));
     }
+
+    public java.util.List<PurchaseOrder> getAllOrders() {
+        return purchaseOrderRepository.findAll();
+    }
 }

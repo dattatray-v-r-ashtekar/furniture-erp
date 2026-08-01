@@ -7,6 +7,7 @@ import com.furniture.erp.accounting.domain.entity.JournalEntry;
 import com.furniture.erp.accounting.domain.event.LedgerBalancedEvent;
 import com.furniture.erp.accounting.infrastructure.repository.GeneralLedgerRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -36,5 +37,9 @@ public class GeneralLedgerService {
     public GeneralLedger getById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
+    }
+
+    public List<GeneralLedger> getAll() {
+        return repository.findAll();
     }
 }

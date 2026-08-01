@@ -4,6 +4,7 @@ import com.furniture.erp.accounting.application.service.GeneralLedgerService;
 import com.furniture.erp.accounting.domain.entity.GeneralLedger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class GeneralLedgerController {
     @GetMapping("/{id}")
     public ResponseEntity<GeneralLedger> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<GeneralLedger>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 

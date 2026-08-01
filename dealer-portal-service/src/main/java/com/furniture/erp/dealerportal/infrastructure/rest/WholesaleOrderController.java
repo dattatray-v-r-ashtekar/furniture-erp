@@ -4,6 +4,7 @@ import com.furniture.erp.dealerportal.application.service.WholesaleOrderService;
 import com.furniture.erp.dealerportal.domain.entity.WholesaleOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -26,6 +27,12 @@ public class WholesaleOrderController {
     @GetMapping("/{id}")
     public ResponseEntity<WholesaleOrder> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<WholesaleOrder>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
 
