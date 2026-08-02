@@ -42,6 +42,10 @@ public class OnlineOrder extends AggregateRoot<UUID> {
     public String getStatus() { return status; }
     public List<CartItem> getItems() { return items; }
 
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     public void addItem(CartItem item) {
         this.items.add(item);
     }

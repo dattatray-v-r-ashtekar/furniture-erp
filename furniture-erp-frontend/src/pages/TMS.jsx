@@ -5,6 +5,7 @@ export default function TMS() {
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchRoutes = async () => {
     setLoading(true);
@@ -43,76 +44,103 @@ export default function TMS() {
     }
   };
 
+  const filteredRoutes = routes.filter(route =>
+    route.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.referenceCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.driverId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.status?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
-      <div className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Truck /> Transport Management System
-        </h2>
-        <button className="btn btn-primary" onClick={fetchRoutes} disabled={loading}>
-          <RefreshCw size={18} className={loading ? 'spin' : ''} /> Refresh
-        </button>
+      <div className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Truck /> Transport Management System (TMS)
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '4px', fontSize: '0.9rem' }}>
+            Auto-dispatched delivery routes and courier tracking synchronized with ERP sales orders.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <input 
+            type="text" 
+            placeholder="Search Route ID or Driver..." 
+            value={searchTerm} 
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ minWidth: '240px' }}
+          />
+          <button className="btn btn-primary" onClick={fetchRoutes} disabled={loading}>
+            <RefreshCw size={18} className={loading ? 'spin' : ''} /> Refresh
+          </button>
+        </div>
       </div>
 
       {error && <div style={{ padding: '24px', color: 'var(--status-error)' }}>{error}</div>}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '24px' }}>
-        {routes.map(routeData => (
-          <div key={routeData.id} className="glass-panel animate-fade-in" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px' }}>
-              <div>
-                <p style={{ color: 'var(--text-secondary)', fontFamily: 'monospace', fontSize: '0.8rem' }}>{routeData.id}</p>
-                <h3 style={{ marginTop: '8px', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  Driver ID: {routeData.driverId}
-                </h3>
+        {filteredRoutes.map(routeData => {
+          const stops = routeData.stops || routeData.items || [];
+          const isPendingStart = routeData.status === 'PLANNED' || routeData.status === 'SCHEDULED';
+          return (
+            <div key={routeData.id} className="glass-panel animate-fade-in" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px' }}>
+                <div>
+                  <p style={{ color: 'var(--text-secondary)', fontFamily: 'monospace', fontSize: '0.8rem' }}>{routeData.id}</p>
+                  <h3 style={{ marginTop: '8px', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {routeData.referenceCode || 'Route'} &bull; Driver: {routeData.driverId || 'DRV-102'}
+                  </h3>
+                </div>
+                <div>
+                  <span className={`badge ${routeData.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '0.9rem', padding: '6px 12px' }}>
+                    {routeData.status || 'SCHEDULED'}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className={`badge ${routeData.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '0.9rem', padding: '6px 12px' }}>
-                  {routeData.status}
-                </span>
-              </div>
-            </div>
 
-            <div>
-              <h3 style={{ marginBottom: '16px', fontSize: '1rem' }}>Delivery Route Stops</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {routeData.stops?.map((stop, i) => (
-                  <div key={stop.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-sm)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>{i + 1}</div>
-                      <div>
-                        <div style={{ fontWeight: 'bold', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <MapPin size={14} /> {stop.deliveryAddress}
+              <div>
+                <h3 style={{ marginBottom: '16px', fontSize: '1rem' }}>Delivery Route Stops</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {stops.map((stop, i) => (
+                    <div key={stop.id || i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-sm)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>{i + 1}</div>
+                        <div>
+                          <div style={{ fontWeight: 'bold', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <MapPin size={14} /> {stop.deliveryAddress || stop.description || 'Customer Delivery Address'}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                            Tracking: {stop.trackingNumber || 'FX-TRACKING'} {stop.salesOrderId ? `| Order: ${stop.salesOrderId}` : ''}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Sales Order: {stop.salesOrderId}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        {stop.status === 'COMPLETED' ? (
+                          <CheckCircle size={18} color="var(--status-success)" />
+                        ) : (
+                          (routeData.status === 'IN_TRANSIT' || isPendingStart) && (
+                            <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }} onClick={() => handleCompleteStop(routeData.id, stop.id)}>
+                              Mark Delivered
+                            </button>
+                          )
+                        )}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      {stop.status === 'COMPLETED' ? (
-                        <CheckCircle size={18} color="var(--status-success)" />
-                      ) : (
-                        routeData.status === 'IN_TRANSIT' && stop.status === 'PENDING' && (
-                          <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }} onClick={() => handleCompleteStop(routeData.id, stop.id)}>
-                            Mark Delivered
-                          </button>
-                        )
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '16px', marginTop: 'auto' }}>
+                {isPendingStart && (
+                  <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => handleStartRoute(routeData.id)}>
+                    <Navigation size={18} /> Start Route
+                  </button>
+                )}
               </div>
             </div>
-
-            <div style={{ display: 'flex', gap: '16px', marginTop: 'auto' }}>
-              {routeData.status === 'PLANNED' && (
-                <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => handleStartRoute(routeData.id)}>
-                  <Navigation size={18} /> Start Route
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-        {routes.length === 0 && !loading && (
+          );
+        })}
+        {filteredRoutes.length === 0 && !loading && (
           <div style={{ color: 'var(--text-secondary)', padding: '24px' }}>No delivery routes found.</div>
         )}
       </div>

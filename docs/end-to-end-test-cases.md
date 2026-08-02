@@ -57,19 +57,30 @@ docker-compose up --build -d
   - Navigate to the **Sales Orders (ERP)** tab (`/sales`).
   - Click **Refresh** to see the official Sales Order created by `erp-central-service` in response to the Kafka payment event.
   - Or via API: `GET http://localhost:8081/api/v1/erp/sales-orders`.
-### Step 3: Verify the Factory Floor
-* **Verify MES**: Navigate to the **Manufacturing** tab in the UI. You can lookup the generated WorkOrder to see its assembly routing.
+### Step 3: Verify the Factory Floor (MES)
+* **Verify MES**: Navigate to the **Manufacturing (MES)** tab (`/manufacturing`) in the UI.
+  - You will see the auto-scheduled Production Order corresponding to the purchased item SKU(s) (e.g. `BED-KING`, `TABLE-DINING`, or `CHAIR-OFFICE`).
+  - The order starts in `PLANNED` status with standard assembly routing operations (Cutting, Assembly, Polishing).
+  - You can also query via API: `GET http://localhost:8081/api/v1/mes/orders`.
 
 ### Step 4: The Factory Finishes Building It
-* **Action**: In the **Manufacturing** tab, you can click "Start Production" and "Complete Production" on the WorkOrder.
-* **What happens**: MES fires `ProductionCompletedEvent`.
+* **Action**: In the **Manufacturing** tab, click **Start Production** (or click **Complete Production** directly to auto-finalize all routing steps).
+* **What happens**: MES transitions the order status to `COMPLETED` and automatically publishes `ProductionCompletedEvent` to Kafka with total good units and defect metrics.
 
 ### Step 5: Verify Warehouse & Logistics
-* **Verify Inventory**: Navigate to the **Inventory** tab in the UI. Lookup `BED-KING`. The stock should reflect the deduction from the sale.
-* **Verify Transport**: Check `tms-service` (`GET http://localhost:8086/api/v1/tms/routes`). You should see an auto-generated delivery route with a FedEx/UPS tracking label attached for the customer's address.
+* **Verify Inventory**: 
+  - Navigate to the **Inventory** tab (`/inventory`) in the UI.
+  - Search for the manufactured item SKU (e.g., `BED-KING` or `TABLE-DINING`).
+  - The available stock will automatically show the updated incremented quantity reflecting the completed build.
+  - API endpoint: `GET http://localhost:8081/api/v1/inventory/items`.
+* **Verify Transport (TMS)**: 
+  - Navigate to the **Transport (TMS)** tab (`/tms`) in the UI.
+  - An express delivery route (`ROUTE-...`) is automatically scheduled with driver assignment and courier tracking numbers (`FX-...`).
+  - Click **Start Route** to dispatch the delivery vehicle, then click **Mark Delivered** to complete customer handover.
+  - API endpoint: `GET http://localhost:8081/api/v1/tms/routes`.
 
 ### Step 6: Verify the AI Brain
-* **Verify Python AI**: Check the Docker logs for `ai-analytics-service`. You should see that the Google Gemini AI intercepted the factory completion event and logged a predictive insight (e.g., *"Custom Oak Table completed. Recommend scheduling saw blade sharpening due to hard wood usage."*)
+* **Verify Python AI**: Check the Docker logs or terminal output for `ai-analytics-service`. The Google Gemini AI model (`gemini-3.5-flash-lite`) intercepts the factory `ProductionCompletedEvent` and streams real-time predictive analytics.
 
 ---
 

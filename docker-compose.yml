@@ -61,28 +61,27 @@ services:
     depends_on:
       - kafka
     entrypoint: [ '/bin/bash', '-c' ]
-    command: >
-      "
-      echo 'Waiting for Kafka to be ready...' &&
-      cub kafka-ready -b kafka:29092 1 30 &&
-      echo 'Creating Kafka topics...' &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic B2CPaymentReceivedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic SalesOrderCreatedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionOrderCreatedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic MaterialConsumptionRequestedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionCompletedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PurchaseOrderIssuedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic GoodsReceivedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic QualityInspectionFailedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic EmployeeOnboardedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ShiftCompletedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PayrollAccruedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic FinancialPeriodClosedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ReportGeneratedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic RouteStartedEvent --replication-factor 1 --partitions 1 &&
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic WarehouseCapacityCriticalEvent --replication-factor 1 --partitions 1 &&
+    command: |
+      echo 'Waiting for Kafka to be ready...'
+      cub kafka-ready -b kafka:29092 1 30
+      echo 'Creating Kafka topics...'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic B2CPaymentReceivedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic SalesOrderCreatedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionOrderCreatedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic MaterialConsumptionRequestedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionCompletedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PurchaseOrderIssuedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic GoodsReceivedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic QualityInspectionFailedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic EmployeeOnboardedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ShiftCompletedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PayrollAccruedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic FinancialPeriodClosedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ReportGeneratedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic RouteStartedEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic WarehouseCapacityCriticalEvent --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic StockUpdatedEvent --replication-factor 1 --partitions 1
       echo 'All ERP Kafka topics ready!'
-      "
     networks:
       - erp-network
 
@@ -128,6 +127,17 @@ services:
       - TZ=Asia/Kolkata
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - erp-network
+
+  furniture-erp-frontend:
+    build:
+      context: ./furniture-erp-frontend
+    container_name: erp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - erp-monolith-runner
     networks:
       - erp-network
 

@@ -25,11 +25,12 @@ def get_active_model():
     if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE":
         return None
     candidate_models = [
+        'gemini-3.5-flash-lite',
+        'gemini-2.5-flash',
+        'gemini-2.0-flash',
         'gemini-1.5-flash',
         'gemini-1.5-flash-latest',
         'gemini-1.5-pro',
-        'gemini-2.0-flash',
-        'gemini-2.0-flash-exp',
         'gemini-pro'
     ]
     try:
@@ -55,7 +56,7 @@ def get_active_model():
             return genai.GenerativeModel(cand)
         except Exception:
             continue
-    return genai.GenerativeModel('gemini-1.5-flash')
+    return genai.GenerativeModel('gemini-3.5-flash-lite')
 
 model = None
 
@@ -75,7 +76,8 @@ topics = [
     'B2CPaymentReceivedEvent',
     'PaymentProcessedEvent',
     'SalesOrderCreatedEvent',
-    'ProductionOrderCreatedEvent', 
+    'ProductionOrderCreatedEvent',
+    'ProductionCompletedEvent',
     'MaterialConsumptionRequestedEvent',
     'QualityInspectionFailedEvent'
 ]

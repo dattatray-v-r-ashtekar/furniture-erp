@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furniture.erp.erpcentral.application.service.SalesOrderService;
 import com.furniture.erp.erpcentral.domain.event.SalesOrderCreatedEvent;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -26,11 +27,23 @@ public class ErpCentralKafkaConsumer {
     }
 
     @KafkaListener(topics = "B2CPaymentReceivedEvent", groupId = "erp-central-service-group")
-    public void handlePaymentReceived(String message) {
+    public void handlePaymentReceived(Object message) {
         log.info("ERP Central received B2CPaymentReceivedEvent from Kafka: {}", message);
         try {
-            JsonNode root = objectMapper.readTree(message);
-            
+            Object val = message;
+            if (val instanceof ConsumerRecord<?, ?> record) {
+                val = record.value();
+            }
+
+            JsonNode root;
+            if (val instanceof String str) {
+                root = objectMapper.readTree(str);
+            } else if (val instanceof byte[] bytes) {
+                root = objectMapper.readTree(bytes);
+            } else {
+                root = objectMapper.valueToTree(val);
+            }
+
             UUID orderId = null;
             if (root.has("orderId") && !root.get("orderId").isNull()) {
                 orderId = UUID.fromString(root.get("orderId").asText());

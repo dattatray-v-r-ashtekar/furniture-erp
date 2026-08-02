@@ -3,6 +3,7 @@ package com.furniture.erp.accounting.infrastructure.messaging;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furniture.erp.accounting.application.service.GeneralLedgerService;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,11 +24,23 @@ public class AccountingKafkaConsumer {
     }
 
     @KafkaListener(topics = "B2CPaymentReceivedEvent", groupId = "accounting-service-group")
-    public void handlePaymentReceived(String message) {
+    public void handlePaymentReceived(Object message) {
         log.info("Accounting received B2CPaymentReceivedEvent from Kafka: {}", message);
         try {
-            JsonNode root = objectMapper.readTree(message);
-            
+            Object val = message;
+            if (val instanceof ConsumerRecord<?, ?> record) {
+                val = record.value();
+            }
+
+            JsonNode root;
+            if (val instanceof String str) {
+                root = objectMapper.readTree(str);
+            } else if (val instanceof byte[] bytes) {
+                root = objectMapper.readTree(bytes);
+            } else {
+                root = objectMapper.valueToTree(val);
+            }
+
             UUID orderId = null;
             if (root.has("orderId") && !root.get("orderId").isNull()) {
                 orderId = UUID.fromString(root.get("orderId").asText());

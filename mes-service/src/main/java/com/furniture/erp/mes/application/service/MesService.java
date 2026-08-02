@@ -26,7 +26,12 @@ public class MesService {
 
     @Transactional
     public ProductionOrder planProduction(String productSku, Integer targetQuantity) {
-        ProductionOrder order = new ProductionOrder(productSku, targetQuantity);
+        return planProduction(productSku, targetQuantity, null, null);
+    }
+
+    @Transactional
+    public ProductionOrder planProduction(String productSku, Integer targetQuantity, String salesOrderId, String orderReference) {
+        ProductionOrder order = new ProductionOrder(productSku, targetQuantity, salesOrderId, orderReference);
         
         // Add default routing for standard furniture (just an example)
         order.addWorkOrder(new WorkOrder("Cutting", "Saw-01"));
@@ -76,8 +81,36 @@ public class MesService {
                 .orElseThrow(() -> new IllegalArgumentException("Production Order not found: " + orderId));
         
         WorkOrder workOrder = order.getWorkOrder(workOrderId);
-        workOrder.complete();
+        if (workOrder.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.PENDING) {
+            workOrder.start();
+        }
+        if (workOrder.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.ACTIVE) {
+            int targetQty = (order.getTargetQuantity() != null && order.getTargetQuantity() > 0) ? order.getTargetQuantity() : 1;
+            if (workOrder.getCompletedQuantity() == 0) {
+                workOrder.reportProgress(targetQty, 0);
+            }
+            workOrder.complete();
+        }
+        
+        boolean allDone = order.getWorkOrders().stream()
+                .allMatch(wo -> wo.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.DONE);
+        
+        if (allDone) {
+            if (order.getStatus() == com.furniture.erp.mes.domain.entity.ProductionStatus.PLANNED) {
+                order.startProduction();
+            }
+            if (order.getStatus() == com.furniture.erp.mes.domain.entity.ProductionStatus.IN_PROGRESS) {
+                order.completeProduction();
+            }
+        }
         productionOrderRepository.save(order);
+
+        if (allDone) {
+            int targetQty = (order.getTargetQuantity() != null && order.getTargetQuantity() > 0) ? order.getTargetQuantity() : 1;
+            int totalGoodQty = Math.max(targetQty, order.getWorkOrders().get(order.getWorkOrders().size() - 1).getCompletedQuantity());
+            int totalDefectiveQty = order.getWorkOrders().stream().mapToInt(WorkOrder::getDefectiveQuantity).sum();
+            eventPublisher.publish(ProductionCompletedEvent.create(order.getId(), order.getProductSku(), totalGoodQty, totalDefectiveQty));
+        }
     }
 
     @Transactional
@@ -85,21 +118,36 @@ public class MesService {
         ProductionOrder order = productionOrderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Production Order not found: " + orderId));
         
+        if (order.getStatus() == com.furniture.erp.mes.domain.entity.ProductionStatus.PLANNED) {
+            order.startProduction();
+        }
+
+        int targetQty = (order.getTargetQuantity() != null && order.getTargetQuantity() > 0) ? order.getTargetQuantity() : 1;
+
         // Ensure work orders are completed before finalizing production
         for (WorkOrder wo : order.getWorkOrders()) {
             if (wo.getStatus() != com.furniture.erp.mes.domain.entity.WorkOrderStatus.DONE) {
                 if (wo.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.PENDING) {
                     wo.start();
                 }
-                wo.reportProgress(order.getTargetQuantity(), 0);
-                wo.complete();
+                if (wo.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.ACTIVE) {
+                    if (wo.getCompletedQuantity() == 0) {
+                        wo.reportProgress(targetQty, 0);
+                    }
+                    wo.complete();
+                }
             }
         }
 
-        order.completeProduction();
+        if (order.getStatus() == com.furniture.erp.mes.domain.entity.ProductionStatus.IN_PROGRESS) {
+            order.completeProduction();
+        }
         productionOrderRepository.save(order);
 
-        int totalGoodQty = order.getWorkOrders().isEmpty() ? order.getTargetQuantity() : order.getWorkOrders().get(order.getWorkOrders().size() - 1).getCompletedQuantity();
+        int totalGoodQty = targetQty;
+        if (!order.getWorkOrders().isEmpty()) {
+            totalGoodQty = Math.max(targetQty, order.getWorkOrders().get(order.getWorkOrders().size() - 1).getCompletedQuantity());
+        }
         int totalDefectiveQty = order.getWorkOrders().stream().mapToInt(WorkOrder::getDefectiveQuantity).sum();
 
         eventPublisher.publish(ProductionCompletedEvent.create(order.getId(), order.getProductSku(), totalGoodQty, totalDefectiveQty));

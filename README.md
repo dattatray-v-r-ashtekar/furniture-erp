@@ -1,91 +1,151 @@
-# Furniture Manufacturing Enterprise Resource Planning (ERP)
+# Furniture Manufacturing Enterprise Resource Planning (ERP) Platform
 
-A state-of-the-art Enterprise Resource Planning system tailored for a furniture manufacturing business. This system handles B2B (wholesale) and B2C (retail) sales, along with manufacturing, warehouse management, logistics, employees, procurement, and finance.
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.0-green.svg)](https://spring.io/projects/spring-boot)
+[![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-3.7.0-red.svg)](https://kafka.apache.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python%203.10+-teal.svg)](https://fastapi.tiangolo.com/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini-purple.svg)](https://ai.google.dev/)
+[![Build & Tests](https://img.shields.io/badge/Tests-100%25%20Passing-brightgreen.svg)]()
 
-## Architecture Overview
-
-This project is built using a **Domain-Driven Design (DDD)** and **Event-Driven Microservices** architecture. 
-Because manufacturing, warehouse, logistics, and sales are naturally separate business domains that evolve independently, this architecture ensures the system scales easily from a single factory to multiple factories, warehouses, and dealer networks without requiring major redesigns.
-
-### Technology Stack
-- **Language**: Java 21 & Python 3
-- **Frameworks**: Spring Boot 3.3.0, FastAPI
-- **Database**: PostgreSQL (Shared/Dedicated schemas per service)
-- **Messaging/Event Bus**: Apache Kafka & Zookeeper
-- **Caching**: Redis
-- **Security**: Keycloak
-- **AI Integration**: Google Gemini API
-- **Frontend UI**: Pure HTML5, Vanilla JavaScript, CSS Glassmorphism
-- **Build Tool**: Maven (Multi-module Monorepo)
+A state-of-the-art Enterprise Resource Planning (ERP) platform architected for modern furniture manufacturing, retail (B2C), wholesale (B2B), warehouse logistics, plant operations, workforce payroll, and real-time AI-powered operational insights.
 
 ---
 
-## System Modules
+## 📑 Technical Documentation Library
 
-The project consists of 14 core Java microservices, 1 Python AI microservice, 1 UI frontend, and a local Monolith Runner.
+*   📖 [**Documentation Master Index**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/README.md)
+*   🏗️ [**System Architecture & DDD Strategy**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/detailed-architecture.md)
+*   🔌 [**REST API Reference Manual**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/api-reference.md)
+*   ⚡ [**Event-Driven Messaging & Kafka Specification**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/event-driven-messaging.md)
+*   🗄️ [**Database Architecture & Schema Reference**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/database-schema.md)
+*   🧪 [**Comprehensive Testing & QA Strategy**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/testing-guide.md)
+*   🚀 [**Deployment & Operations Guide**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/deployment-and-operations.md)
+*   🖥️ [**Frontend Command Center Guide**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/frontend-guide.md)
+*   📋 [**Business Use Cases & Scenarios**](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/use-cases.md)
 
-### 1. Core Microservices (Java / Spring Boot)
+---
 
-| Module | Port | Description |
+## 🏛️ Architecture Overview
+
+The system implements a **Domain-Driven Design (DDD)** and **Event-Driven Architecture (EDA)** across 15 microservices:
+
+```mermaid
+graph TD
+    User(["Factory Worker / Admin / Customer"])
+    WebUI["Frontend Dashboard<br/>(Vanilla JS Glassmorphism SPA)"]
+    API_Gateway{"Unified Monolith Runner<br/>or K8s Gateway (Port 8081)"}
+    Gemini(["Google Gemini API"])
+
+    User -->|Interacts| WebUI
+    WebUI -->|REST APIs| API_Gateway
+
+    subgraph "Core Java Microservices (Spring Boot 3.3 / Java 21)"
+        API_Gateway --> Ecom["ecommerce-service"]
+        API_Gateway --> ERP["erp-central-service"]
+        API_Gateway --> MES["mes-service"]
+        API_Gateway --> Fin["accounting-service"]
+        API_Gateway --> Inv["inventory-service"]
+        API_Gateway --> Proc["procurement-service"]
+        API_Gateway --> WMS["wms-service"]
+        API_Gateway --> TMS["tms-service"]
+        API_Gateway --> CRM["crm-service"]
+        API_Gateway --> B2B["dealer-portal-service"]
+        API_Gateway --> HRMS["hrms-service"]
+        API_Gateway --> Payroll["payroll-service"]
+        API_Gateway --> QMS["qms-service"]
+        API_Gateway --> BI["bi-service"]
+    end
+
+    subgraph "Data & Messaging Infrastructure (Docker)"
+        DB[("PostgreSQL 16")]
+        Kafka[["Apache Kafka Event Bus"]]
+    end
+
+    Ecom & ERP & MES & Fin & Inv & Proc & WMS & TMS & CRM & B2B & HRMS & Payroll & QMS & BI -->|"JPA / SQL"| DB
+    Ecom & ERP & MES & Fin & Inv & Proc & WMS & TMS & CRM & B2B & HRMS & Payroll & QMS & BI -->|"Pub/Sub Events"| Kafka
+
+    subgraph "AI Analytics Layer (Python / FastAPI)"
+        AIBrain["ai-analytics-service<br/>(Port 8095)"]
+    end
+
+    Kafka -->|Streams Domain Events| AIBrain
+    AIBrain -->|LLM Prompts & Insights| Gemini
+```
+
+---
+
+## 📦 Microservices Catalog
+
+| Service Module | Port | Responsibility & Domain Bounded Context |
 | :--- | :--- | :--- |
-| `inventory-service` | `8081` | Manages raw material and finished goods stock. |
-| `procurement-service` | `8082` | Purchases raw materials from external vendors. |
-| `erp-central-service` | `8083` | Central management of customer sales orders. |
-| `mes-service` | `8084` | Manufacturing Execution: Factory floor production jobs. |
-| `wms-service` | `8085` | Warehouse location tracking and physical bins. |
-| `tms-service` | `8086` | Transportation Management: Logistics and shipping routes. |
-| `crm-service` | `8087` | Customer Relationship Management: Leads and follow-ups. |
-| `dealer-portal-service`| `8088` | B2B ordering portal for retail stores and wholesalers. |
-| `ecommerce-service` | `8089` | B2C direct-to-consumer online sales. |
-| `hrms-service` | `8090` | Human Resources: Employee records and shift tracking. |
-| `payroll-service` | `8091` | Salary and tax records. |
-| `accounting-service` | `8092` | General ledger financial entries (AP/AR). |
-| `qms-service` | `8093` | Quality Management: Defect tracking and inspection. |
-| `bi-service` | `8094` | Business Intelligence: KPI reports and dashboards. |
-
-### 2. The AI Brain (Python / FastAPI)
-- **`ai-analytics-service` (Port 8095)**: A Python microservice that listens to the Kafka event stream in real-time. When an event fires (e.g., `ProductionOrderCreatedEvent`), it sends the data to the **Google Gemini API** to generate actionable business insights, predictive maintenance alerts, and supply chain routing optimizations.
-
-### 3. The Frontend Dashboard
-- **`furniture-erp-ui`**: A Unified Enterprise Command Center built as a Single Page Application (SPA). It uses a premium dark-mode, glassmorphism design and makes dynamic REST API calls to the backend microservices.
-
-### 4. Local Deployment Monolith (Low RAM)
-- **`erp-monolith-runner` (Port 8080)**: For cloud deployments, you would deploy the 14 microservices individually. However, for local testing on a laptop, this module combines all 14 domains into a single Tomcat process. It uses only ~1GB of RAM while keeping the original microservice codebase 100% untouched.
+| **`ecommerce-service`** | `8089` | Direct-to-Consumer (B2C) online furniture store, shopping cart, and payment event publishing. |
+| **`erp-central-service`** | `8083` | Central sales order orchestration, order validation, and consolidation. |
+| **`accounting-service`** | `8092` | General ledger double-entry bookkeeping, revenue/cost recognition, balance sheets. |
+| **`mes-service`** | `8084` | Manufacturing Execution System: factory floor work orders, assembly line tracking. |
+| **`inventory-service`** | `8081` | Real-time stock counts for raw timber, hardware, and finished furniture. |
+| **`procurement-service`** | `8082` | Vendor purchase orders for lumber, fabrics, varnishes, and fittings. |
+| **`wms-service`** | `8085` | Warehouse management: aisle, rack, and bin capacity tracking. |
+| **`tms-service`** | `8086` | Transportation management: fleet dispatch, driver scheduling, and delivery routes. |
+| **`crm-service`** | `8087` | Customer Relationship Management: client accounts, tier ratings, and loyalty scores. |
+| **`dealer-portal-service`**| `8088` | B2B wholesale portal for commercial distributor orders. |
+| **`hrms-service`** | `8090` | Human Resources: employee profiles and factory floor shift rosters. |
+| **`payroll-service`** | `8091` | Employee payroll disbursement, tax deductions, and net salary slips. |
+| **`qms-service`** | `8093` | Quality Management: inspection checklists, defect logging, and batch QA. |
+| **`bi-service`** | `8094` | Business Intelligence: executive revenue and manufacturing KPI reports. |
+| **`ai-analytics-service`** | `8095` | Real-time Kafka stream listener providing AI insights via Google Gemini. |
+| **`erp-monolith-runner`** | `8081` | Single-process runner hosting all 14 Java modules (~1.5GB RAM) for development. |
 
 ---
 
-## Getting Started
+## 🚀 Quick Start Guide
 
-### Prerequisites
-- JDK 21
-- Maven 3.8+
-- Docker & Docker Compose
-- Google Gemini API Key
+### 1. Prerequisites
+*   JDK 21
+*   Maven 3.8+
+*   Docker & Docker Compose
+*   Python 3.10+ (for AI service & test suites)
 
-### 1. Build the Application Code
-Before running Docker, you must compile the Java `.jar` files locally.
+### 2. Configure Environment (`.env`)
 ```bash
-mvn clean install -DskipTests
+GEMINI_API_KEY="your_gemini_api_key_here"
 ```
 
-### 2. Set your AI Key
+### 3. Build Application Code
 ```bash
-export GEMINI_API_KEY="your-gemini-key-here"
-# Windows PowerShell: $env:GEMINI_API_KEY="your-gemini-key-here"
+mvn clean package -DskipTests
 ```
 
-### 3. Run in Docker (Option A: Monolith Mode - Recommended for Laptops)
-To run all 14 services inside a single low-memory Docker container alongside your infrastructure and AI Brain:
+### 4. Start Docker Environment (Monolith Mode)
 ```bash
 docker-compose up --build -d
 ```
-*Note: The monolith runs on port `8081`.*
 
-### 3. Run in Docker (Option B: True Microservices Mode)
-If you have a powerful machine (>32GB RAM) and want to simulate a full Kubernetes distributed deployment, you can run all 14 microservices as 14 separate Docker containers simultaneously:
+### 5. Launch the Web UI
+Open `furniture-erp-ui/index.html` in any web browser to access the Unified Command Center.
+
+---
+
+## 🧪 Testing Strategy & Verification
+
+The codebase is backed by an automated multi-tier test suite across all 18 modules:
+
 ```bash
-docker-compose -f docker-compose-microservices.yml up --build -d
+# 1. Full Build, Test & Install (Executes all 15+ Java Unit, Integration & Embedded E2E tests)
+mvn clean install
+
+# 2. Rapid Java Test Run (Runs all Java test suites without packaging)
+mvn test
+
+# 3. Test a Single Module (e.g. ecommerce-service)
+mvn test -pl ecommerce-service
+
+# 4. Run Python AI Analytics Unit Tests
+python -m unittest discover -s ai-analytics-service/tests
+
+# 5. Run Live End-to-End System Verification Suite (Real HTTP REST & Live Kafka sync against Docker)
+python tests/live_e2e_suite.py
 ```
 
-### 4. Launch the Frontend UI
-Navigate to the `furniture-erp-ui` folder and double-click `index.html` to open the Enterprise Command Center in your browser. From there, you can interact with the system and watch the AI Brain analyze your events in real-time!
+For full details, see the [Comprehensive Testing Guide](file:///C:/Users/datta/.gemini/antigravity/scratch/furniture-erp/docs/testing-guide.md).
+

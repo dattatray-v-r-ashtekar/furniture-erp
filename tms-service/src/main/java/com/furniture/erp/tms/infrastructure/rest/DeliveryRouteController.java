@@ -5,7 +5,6 @@ import com.furniture.erp.tms.domain.entity.DeliveryRoute;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 import java.util.UUID;
 
 @RestController
@@ -24,11 +23,28 @@ public class DeliveryRouteController {
         return ResponseEntity.ok(agg);
     }
 
+    @PostMapping("/{routeId}/start")
+    public ResponseEntity<Void> startRoute(@PathVariable UUID routeId) {
+        service.startRoute(routeId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{routeId}/stops/{stopId}/complete")
+    public ResponseEntity<Void> completeStop(@PathVariable UUID routeId, @PathVariable UUID stopId) {
+        service.completeStop(routeId, stopId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{routeId}/complete")
+    public ResponseEntity<Void> completeRoute(@PathVariable UUID routeId) {
+        service.completeRoute(routeId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DeliveryRoute> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
     }
-
 
     @GetMapping
     public ResponseEntity<List<DeliveryRoute>> getAll() {

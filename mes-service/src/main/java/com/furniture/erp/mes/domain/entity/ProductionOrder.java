@@ -15,6 +15,8 @@ public class ProductionOrder extends AggregateRoot<UUID> {
     private UUID id;
     private String productSku;
     private Integer targetQuantity;
+    private String salesOrderId;
+    private String orderReference;
 
     @Enumerated(EnumType.STRING)
     private ProductionStatus status;
@@ -27,9 +29,15 @@ public class ProductionOrder extends AggregateRoot<UUID> {
     }
 
     public ProductionOrder(String productSku, Integer targetQuantity) {
+        this(productSku, targetQuantity, null, null);
+    }
+
+    public ProductionOrder(String productSku, Integer targetQuantity, String salesOrderId, String orderReference) {
         this.id = UUID.randomUUID();
         this.productSku = productSku;
         this.targetQuantity = targetQuantity;
+        this.salesOrderId = salesOrderId;
+        this.orderReference = orderReference;
         this.status = ProductionStatus.PLANNED;
         super.setId(this.id);
     }
@@ -37,6 +45,8 @@ public class ProductionOrder extends AggregateRoot<UUID> {
     public UUID getId() { return id; }
     public String getProductSku() { return productSku; }
     public Integer getTargetQuantity() { return targetQuantity; }
+    public String getSalesOrderId() { return salesOrderId; }
+    public String getOrderReference() { return orderReference; }
     public ProductionStatus getStatus() { return status; }
     public List<WorkOrder> getWorkOrders() { return workOrders; }
 

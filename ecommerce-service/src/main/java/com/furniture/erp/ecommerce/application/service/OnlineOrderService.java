@@ -31,18 +31,42 @@ public class OnlineOrderService {
 
         if (requestedItems != null && !requestedItems.isEmpty()) {
             for (Object itemObj : requestedItems) {
+                String sku = null;
+                String name = null;
+                int qty = 1;
+                double price = 0.0;
+
                 if (itemObj instanceof com.furniture.erp.ecommerce.infrastructure.rest.OnlineOrderController.ItemRequest itemReq) {
-                    agg.addItem(new CartItem(itemReq.sku(), itemReq.name(), itemReq.quantity(), itemReq.price()));
+                    sku = itemReq.sku();
+                    name = itemReq.name();
+                    qty = itemReq.quantity() != null ? itemReq.quantity() : 1;
+                    price = itemReq.price() != null ? itemReq.price() : 0.0;
+                } else if (itemObj instanceof java.util.Map<?, ?> map) {
+                    sku = map.get("sku") != null ? map.get("sku").toString() : (map.get("id") != null ? map.get("id").toString() : "ITEM");
+                    name = map.get("name") != null ? map.get("name").toString() : "Product";
+                    qty = map.get("quantity") != null ? Integer.parseInt(map.get("quantity").toString()) : 1;
+                    price = map.get("price") != null ? Double.parseDouble(map.get("price").toString()) : 0.0;
+                }
+
+                if (sku != null) {
+                    agg.addItem(new CartItem(sku, name, qty, price));
                     eventItems.add(new com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.ItemDto(
-                            itemReq.sku(), itemReq.name(), itemReq.quantity(), itemReq.price()
+                            sku, name, qty, price
                     ));
                 }
             }
-        } else {
+        }
+
+        if (eventItems.isEmpty()) {
             agg.addItem(new CartItem("BED-KING", "Luxury King Size Bed", 1, 45000.00));
             eventItems.add(new com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.ItemDto(
                     "BED-KING", "Luxury King Size Bed", 1, 45000.00
             ));
+        }
+
+        double calculatedTotal = agg.getItems().stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
+        if (totalAmount == null || totalAmount <= 0.0) {
+            agg.setTotalAmount(calculatedTotal);
         }
 
         OnlineOrder saved = repository.save(agg);
