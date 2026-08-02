@@ -14,6 +14,8 @@ public class SalesOrder extends AggregateRoot<UUID> {
     @Id
     private UUID id;
     private String referenceCode;
+    private Double totalAmount;
+    private String status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sales_order_id")
@@ -22,14 +24,22 @@ public class SalesOrder extends AggregateRoot<UUID> {
     protected SalesOrder() {
     }
 
-    public SalesOrder(String referenceCode) {
-        this.id = UUID.randomUUID();
+    public SalesOrder(UUID id, String referenceCode, Double totalAmount, String status) {
+        this.id = id != null ? id : UUID.randomUUID();
         this.referenceCode = referenceCode;
+        this.totalAmount = totalAmount != null ? totalAmount : 0.0;
+        this.status = status != null ? status : "CONFIRMED";
         super.setId(this.id);
+    }
+
+    public SalesOrder(String referenceCode) {
+        this(UUID.randomUUID(), referenceCode, 0.0, "CONFIRMED");
     }
 
     public UUID getId() { return id; }
     public String getReferenceCode() { return referenceCode; }
+    public Double getTotalAmount() { return totalAmount; }
+    public String getStatus() { return status; }
     public List<SalesOrderLine> getItems() { return items; }
 
     public void addItem(SalesOrderLine item) {

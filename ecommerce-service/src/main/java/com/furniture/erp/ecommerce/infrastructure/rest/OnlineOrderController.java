@@ -4,8 +4,8 @@ import com.furniture.erp.ecommerce.application.service.OnlineOrderService;
 import com.furniture.erp.ecommerce.domain.entity.OnlineOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,7 +20,7 @@ public class OnlineOrderController {
 
     @PostMapping
     public ResponseEntity<OnlineOrder> create(@RequestBody CreateRequest request) {
-        OnlineOrder agg = service.createOnlineOrder(request.referenceCode());
+        OnlineOrder agg = service.createOnlineOrder(request.referenceCode(), request.totalAmount(), request.items());
         return ResponseEntity.ok(agg);
     }
 
@@ -29,11 +29,11 @@ public class OnlineOrderController {
         return ResponseEntity.ok(service.getById(id));
     }
 
-
     @GetMapping
     public ResponseEntity<List<OnlineOrder>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
-}
 
-record CreateRequest(String referenceCode) {}
+    public record CreateRequest(String referenceCode, Double totalAmount, List<ItemRequest> items) {}
+    public record ItemRequest(String sku, String name, Integer quantity, Double price) {}
+}

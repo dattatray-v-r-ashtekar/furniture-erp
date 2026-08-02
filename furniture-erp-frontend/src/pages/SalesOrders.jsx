@@ -78,19 +78,33 @@ export default function SalesOrders() {
               </span>
             </div>
 
-            <div>
-              <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Reference Code:</span>
-              <p style={{ fontWeight: 600, marginTop: '2px', fontSize: '0.95rem' }}>{order.referenceCode || 'N/A'}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Reference Code:</span>
+                <p style={{ fontWeight: 600, marginTop: '2px', fontSize: '0.95rem' }}>{order.referenceCode || 'N/A'}</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Total:</span>
+                <p style={{ fontWeight: 'bold', color: 'var(--status-success)', fontSize: '1.1rem' }}>
+                  ₹{Number(order.totalAmount || 0).toFixed(2)}
+                </p>
+              </div>
             </div>
 
-            {order.lines && order.lines.length > 0 && (
+            {(order.items || order.lines) && (order.items || order.lines).length > 0 && (
               <div>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Order Lines:</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Order Line Items:</span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
-                  {order.lines.map((line, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(0,0,0,0.2)', padding: '6px 10px', borderRadius: '4px', fontSize: '0.85rem' }}>
-                      <span>SKU: {line.sku || line.productId}</span>
-                      <span>Qty: {line.quantity}</span>
+                  {(order.items || order.lines).map((line, idx) => (
+                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '8px 12px', borderRadius: '4px', fontSize: '0.85rem' }}>
+                      <div>
+                        <strong>{line.sku || line.productId || 'ITEM'}</strong>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{line.description || line.name}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span>Qty: {line.quantity || 1}</span>
+                        {line.price ? <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>₹{Number(line.price).toFixed(2)}</div> : null}
+                      </div>
                     </div>
                   ))}
                 </div>

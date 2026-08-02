@@ -1,4 +1,4 @@
-package com.furniture.erp.erpcentral.domain.event;
+package com.furniture.erp.ecommerce.domain.event;
 
 import com.furniture.erp.domain.event.DomainEvent;
 
@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public class SalesOrderCreatedEvent implements DomainEvent<SalesOrderCreatedEvent> {
+public class B2CPaymentReceivedEvent implements DomainEvent<B2CPaymentReceivedEvent> {
     private UUID eventId;
     private UUID orderId;
     private String referenceCode;
@@ -14,9 +14,9 @@ public class SalesOrderCreatedEvent implements DomainEvent<SalesOrderCreatedEven
     private List<ItemDto> items;
     private Instant timestamp;
 
-    public SalesOrderCreatedEvent() {}
+    public B2CPaymentReceivedEvent() {}
 
-    public SalesOrderCreatedEvent(UUID eventId, UUID orderId, String referenceCode, Double totalAmount, List<ItemDto> items, Instant timestamp) {
+    public B2CPaymentReceivedEvent(UUID eventId, UUID orderId, String referenceCode, Double totalAmount, List<ItemDto> items, Instant timestamp) {
         this.eventId = eventId;
         this.orderId = orderId;
         this.referenceCode = referenceCode;
@@ -32,26 +32,25 @@ public class SalesOrderCreatedEvent implements DomainEvent<SalesOrderCreatedEven
     public List<ItemDto> getItems() { return items; }
     public Instant getTimestamp() { return timestamp; }
 
-    public static SalesOrderCreatedEvent create(UUID orderId, String referenceCode, Double totalAmount, List<ItemDto> items) {
-        return new SalesOrderCreatedEvent(UUID.randomUUID(), orderId, referenceCode, totalAmount, items, Instant.now());
+    public static B2CPaymentReceivedEvent create(UUID orderId, String referenceCode, Double totalAmount, List<ItemDto> items) {
+        return new B2CPaymentReceivedEvent(UUID.randomUUID(), orderId, referenceCode, totalAmount, items, Instant.now());
     }
 
     public static class ItemDto {
         private String sku;
-        private String description;
+        private String name;
         private Integer quantity;
         private Double price;
 
         public ItemDto() {}
-        public ItemDto(String sku, String description, Integer quantity, Double price) {
+        public ItemDto(String sku, String name, Integer quantity, Double price) {
             this.sku = sku;
-            this.description = description;
+            this.name = name;
             this.quantity = quantity;
             this.price = price;
         }
-
         public String getSku() { return sku; }
-        public String getDescription() { return description; }
+        public String getName() { return name; }
         public Integer getQuantity() { return quantity; }
         public Double getPrice() { return price; }
     }

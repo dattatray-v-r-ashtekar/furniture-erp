@@ -5,6 +5,8 @@ export default function Manufacturing() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [actionLoading, setActionLoading] = useState(null);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -26,38 +28,66 @@ export default function Manufacturing() {
   }, []);
 
   const handleStartProduction = async (orderId) => {
+    setActionLoading(orderId);
     try {
-      await fetch(`http://localhost:8081/api/v1/mes/orders/${orderId}/start`, { method: 'POST' });
-      fetchOrders();
+      const res = await fetch(`http://localhost:8081/api/v1/mes/orders/${orderId}/start`, { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to start production');
+      await fetchOrders();
     } catch (err) {
-      console.error(err);
+      alert('Error starting production: ' + err.message);
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleCompleteProduction = async (orderId) => {
+    setActionLoading(orderId);
     try {
-      await fetch(`http://localhost:8081/api/v1/mes/orders/${orderId}/complete`, { method: 'POST' });
-      fetchOrders();
+      const res = await fetch(`http://localhost:8081/api/v1/mes/orders/${orderId}/complete`, { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to complete production');
+      await fetchOrders();
     } catch (err) {
-      console.error(err);
+      alert('Error completing production: ' + err.message);
+    } finally {
+      setActionLoading(null);
     }
   };
 
+  const filteredOrders = orders.filter(order =>
+    order.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.productSku?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.status?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
-      <div className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Factory /> Production Orders
-        </h2>
-        <button className="btn btn-primary" onClick={fetchOrders} disabled={loading}>
-          <RefreshCw size={18} className={loading ? 'spin' : ''} /> Refresh
-        </button>
+      <div className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Factory /> Production Orders (MES)
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '4px', fontSize: '0.9rem' }}>
+            Manufacturing execution scheduled automatically per purchased item SKU.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <input 
+            type="text" 
+            placeholder="Search by Order UUID or SKU..." 
+            value={searchTerm} 
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ minWidth: '260px' }}
+          />
+          <button className="btn btn-primary" onClick={fetchOrders} disabled={loading}>
+            <RefreshCw size={18} className={loading ? 'spin' : ''} /> Refresh
+          </button>
+        </div>
       </div>
 
       {error && <div style={{ padding: '24px', color: 'var(--status-error)' }}>{error}</div>}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '24px' }}>
-        {orders.map(orderData => (
+        {filteredOrders.map(orderData => (
           <div key={orderData.id} className="glass-panel animate-fade-in" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px' }}>
               <div>
@@ -94,7 +124,7 @@ export default function Manufacturing() {
                       </div>
                     </div>
                     <div>
-                      {wo.status === 'COMPLETED' ? <CheckCircle size={16} color="var(--status-success)" /> : <Clock size={16} color="var(--status-warning)" />}
+                      {wo.status === 'COMPLETED' || wo.status === 'DONE' || orderData.status === 'COMPLETED' ? <CheckCircle size={16} color="var(--status-success)" /> : <Clock size={16} color="var(--status-warning)" />}
                     </div>
                   </div>
                 ))}
@@ -103,10 +133,29 @@ export default function Manufacturing() {
 
             <div style={{ display: 'flex', gap: '16px', marginTop: 'auto' }}>
               {orderData.status === 'PLANNED' && (
-                <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => handleStartProduction(orderData.id)}>Start Production</button>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ width: '100%' }} 
+                  onClick={() => handleStartProduction(orderData.id)}
+                  disabled={actionLoading === orderData.id}
+                >
+                  {actionLoading === orderData.id ? 'Starting...' : 'Start Production'}
+                </button>
               )}
               {orderData.status === 'IN_PROGRESS' && (
-                <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => handleCompleteProduction(orderData.id)}>Complete Production</button>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ width: '100%' }} 
+                  onClick={() => handleCompleteProduction(orderData.id)}
+                  disabled={actionLoading === orderData.id}
+                >
+                  {actionLoading === orderData.id ? 'Finalizing...' : 'Complete Production (Finish All Routing)'}
+                </button>
+              )}
+              {orderData.status === 'COMPLETED' && (
+                <div style={{ width: '100%', textAlign: 'center', color: 'var(--status-success)', fontWeight: 'bold', padding: '8px' }}>
+                  ✓ Production Complete & Stock Ready
+                </div>
               )}
             </div>
           </div>

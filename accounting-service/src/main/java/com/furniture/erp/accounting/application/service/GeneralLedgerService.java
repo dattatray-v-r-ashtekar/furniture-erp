@@ -7,9 +7,9 @@ import com.furniture.erp.accounting.domain.entity.JournalEntry;
 import com.furniture.erp.accounting.domain.event.LedgerBalancedEvent;
 import com.furniture.erp.accounting.infrastructure.repository.GeneralLedgerRepository;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,13 +24,18 @@ public class GeneralLedgerService {
     }
 
     @Transactional
-    public GeneralLedger createLedger(String referenceCode) {
-        GeneralLedger agg = new GeneralLedger(referenceCode);
-        agg.addItem(new JournalEntry("Initial item for " + referenceCode));
+    public GeneralLedger createLedger(UUID id, String referenceCode, String accountId, String entryType, Double amount, String description) {
+        GeneralLedger agg = new GeneralLedger(id, referenceCode, accountId, entryType, amount, description);
+        agg.addItem(new JournalEntry(description != null ? description : "Ledger entry for " + referenceCode));
         GeneralLedger saved = repository.save(agg);
         
         eventPublisher.publish(LedgerBalancedEvent.create(saved.getId()));
         return saved;
+    }
+
+    @Transactional
+    public GeneralLedger createLedger(String referenceCode) {
+        return createLedger(UUID.randomUUID(), referenceCode, "REVENUE-B2C", "CREDIT", 45000.00, "B2C Order Revenue " + referenceCode);
     }
 
     @Transactional(readOnly = true)

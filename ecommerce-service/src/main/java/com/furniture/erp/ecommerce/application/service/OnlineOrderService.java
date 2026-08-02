@@ -24,13 +24,39 @@ public class OnlineOrderService {
     }
 
     @Transactional
-    public OnlineOrder createOnlineOrder(String referenceCode) {
-        OnlineOrder agg = new OnlineOrder(referenceCode);
-        agg.addItem(new CartItem("Initial item for " + referenceCode));
+    public OnlineOrder createOnlineOrder(String referenceCode, Double totalAmount, List<?> requestedItems) {
+        OnlineOrder agg = new OnlineOrder(referenceCode, totalAmount);
+        
+        java.util.List<com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.ItemDto> eventItems = new java.util.ArrayList<>();
+
+        if (requestedItems != null && !requestedItems.isEmpty()) {
+            for (Object itemObj : requestedItems) {
+                if (itemObj instanceof com.furniture.erp.ecommerce.infrastructure.rest.OnlineOrderController.ItemRequest itemReq) {
+                    agg.addItem(new CartItem(itemReq.sku(), itemReq.name(), itemReq.quantity(), itemReq.price()));
+                    eventItems.add(new com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.ItemDto(
+                            itemReq.sku(), itemReq.name(), itemReq.quantity(), itemReq.price()
+                    ));
+                }
+            }
+        } else {
+            agg.addItem(new CartItem("BED-KING", "Luxury King Size Bed", 1, 45000.00));
+            eventItems.add(new com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.ItemDto(
+                    "BED-KING", "Luxury King Size Bed", 1, 45000.00
+            ));
+        }
+
         OnlineOrder saved = repository.save(agg);
         
-        eventPublisher.publish(PaymentProcessedEvent.create(saved.getId()));
+        // Publish single unified B2CPaymentReceivedEvent with rich details
+        eventPublisher.publish(com.furniture.erp.ecommerce.domain.event.B2CPaymentReceivedEvent.create(
+                saved.getId(), saved.getReferenceCode(), saved.getTotalAmount(), eventItems
+        ));
         return saved;
+    }
+
+    @Transactional
+    public OnlineOrder createOnlineOrder(String referenceCode) {
+        return createOnlineOrder(referenceCode, 45000.00, null);
     }
 
     @Transactional(readOnly = true)

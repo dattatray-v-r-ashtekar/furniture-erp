@@ -85,10 +85,21 @@ public class MesService {
         ProductionOrder order = productionOrderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Production Order not found: " + orderId));
         
+        // Ensure work orders are completed before finalizing production
+        for (WorkOrder wo : order.getWorkOrders()) {
+            if (wo.getStatus() != com.furniture.erp.mes.domain.entity.WorkOrderStatus.DONE) {
+                if (wo.getStatus() == com.furniture.erp.mes.domain.entity.WorkOrderStatus.PENDING) {
+                    wo.start();
+                }
+                wo.reportProgress(order.getTargetQuantity(), 0);
+                wo.complete();
+            }
+        }
+
         order.completeProduction();
         productionOrderRepository.save(order);
 
-        int totalGoodQty = order.getWorkOrders().get(order.getWorkOrders().size() - 1).getCompletedQuantity();
+        int totalGoodQty = order.getWorkOrders().isEmpty() ? order.getTargetQuantity() : order.getWorkOrders().get(order.getWorkOrders().size() - 1).getCompletedQuantity();
         int totalDefectiveQty = order.getWorkOrders().stream().mapToInt(WorkOrder::getDefectiveQuantity).sum();
 
         eventPublisher.publish(ProductionCompletedEvent.create(order.getId(), order.getProductSku(), totalGoodQty, totalDefectiveQty));

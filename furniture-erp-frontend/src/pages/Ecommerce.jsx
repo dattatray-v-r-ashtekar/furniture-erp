@@ -24,10 +24,20 @@ export default function Ecommerce() {
     if (cart.length === 0) return;
     setCheckoutStatus('processing');
     
-    // Simulate real E2E backend call to Monolith API on 8081
     try {
+      const items = cart.map(item => ({
+        sku: item.id,
+        name: item.name,
+        quantity: 1,
+        price: item.price
+      }));
+      const totalAmount = parseFloat(getCartTotal());
+      const orderRef = `ORD-B2C-${Date.now().toString().slice(-6)}`;
+
       const payload = {
-        referenceCode: `CUST-123-ORDER-${Date.now()}`
+        referenceCode: orderRef,
+        totalAmount: totalAmount,
+        items: items
       };
       
       const response = await fetch('http://localhost:8081/api/v1/ecommerce/orders', {
@@ -109,12 +119,20 @@ export default function Ecommerce() {
         {checkoutStatus === 'success' && (
           <div className="animate-fade-in" style={{ marginTop: '24px', padding: '16px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--status-success)', borderRadius: 'var(--radius-sm)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-success)', marginBottom: '8px', fontWeight: 'bold' }}>
-              <CheckCircle size={18} /> Order Placed!
+              <CheckCircle size={18} /> Order Placed Successfully!
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Event <strong>B2CPaymentReceivedEvent</strong> published to Kafka.</p>
-            <pre style={{ marginTop: '12px', fontSize: '0.75rem', background: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '4px', overflowX: 'auto' }}>
-              {JSON.stringify(responseLog, null, 2)}
-            </pre>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+              Order Reference: <strong>{responseLog?.referenceCode}</strong>
+            </p>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              Total Amount: <strong>₹{Number(responseLog?.totalAmount || 0).toFixed(2)}</strong>
+            </p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+              Order UUID: <code style={{ fontSize: '0.75rem' }}>{responseLog?.id}</code>
+            </p>
+            <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--accent-primary)', lineHeight: '1.4' }}>
+              💡 Events published! Check <strong>Sales Orders</strong>, <strong>Finance Ledger</strong>, and <strong>Manufacturing</strong> tabs to see real-time updates.
+            </div>
           </div>
         )}
 

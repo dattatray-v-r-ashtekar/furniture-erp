@@ -5,6 +5,7 @@ services:
     image: postgres:15-alpine
     container_name: erp-postgres
     environment:
+      TZ: Asia/Kolkata
       POSTGRES_USER: erp_user
       POSTGRES_PASSWORD: erp_password
       POSTGRES_DB: erp_db
@@ -25,6 +26,7 @@ services:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: erp-zookeeper
     environment:
+      TZ: Asia/Kolkata
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
@@ -40,12 +42,47 @@ services:
     ports:
       - "9092:9092"
     environment:
+      TZ: Asia/Kolkata
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    networks:
+      - erp-network
+
+  init-kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: erp-init-kafka
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/bash', '-c' ]
+    command: >
+      "
+      echo 'Waiting for Kafka to be ready...' &&
+      cub kafka-ready -b kafka:29092 1 30 &&
+      echo 'Creating Kafka topics...' &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic B2CPaymentReceivedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic SalesOrderCreatedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionOrderCreatedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic MaterialConsumptionRequestedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ProductionCompletedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PurchaseOrderIssuedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic GoodsReceivedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic QualityInspectionFailedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic EmployeeOnboardedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ShiftCompletedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic PayrollAccruedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic FinancialPeriodClosedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic ReportGeneratedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic RouteStartedEvent --replication-factor 1 --partitions 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic WarehouseCapacityCriticalEvent --replication-factor 1 --partitions 1 &&
+      echo 'All ERP Kafka topics ready!'
+      "
     networks:
       - erp-network
 
@@ -71,6 +108,8 @@ services:
     ports:
       - "8081:8080" # Exposed on 8081 since keycloak uses 8080
     environment:
+      - TZ=Asia/Kolkata
+      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Kolkata
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     networks:
@@ -82,10 +121,13 @@ services:
     container_name: ai-analytics-service
     depends_on:
       - kafka
+      - init-kafka
     ports:
       - "8095:8095"
     environment:
+      - TZ=Asia/Kolkata
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     networks:
       - erp-network
 

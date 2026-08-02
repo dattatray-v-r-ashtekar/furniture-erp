@@ -7,9 +7,10 @@ import com.furniture.erp.erpcentral.domain.entity.SalesOrderLine;
 import com.furniture.erp.erpcentral.domain.event.SalesOrderCreatedEvent;
 import com.furniture.erp.erpcentral.infrastructure.repository.SalesOrderRepository;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,13 +25,28 @@ public class SalesOrderService {
     }
 
     @Transactional
-    public SalesOrder createSalesOrder(String referenceCode) {
-        SalesOrder agg = new SalesOrder(referenceCode);
-        agg.addItem(new SalesOrderLine("Initial item for " + referenceCode));
-        SalesOrder saved = repository.save(agg);
+    public SalesOrder createSalesOrder(UUID orderId, String referenceCode, Double totalAmount, List<SalesOrderCreatedEvent.ItemDto> items) {
+        SalesOrder agg = new SalesOrder(orderId, referenceCode, totalAmount, "CONFIRMED");
         
-        eventPublisher.publish(SalesOrderCreatedEvent.create(saved.getId()));
+        List<SalesOrderCreatedEvent.ItemDto> eventItems = new ArrayList<>();
+        if (items != null && !items.isEmpty()) {
+            for (SalesOrderCreatedEvent.ItemDto item : items) {
+                agg.addItem(new SalesOrderLine(item.getSku(), item.getDescription(), item.getQuantity(), item.getPrice()));
+                eventItems.add(item);
+            }
+        } else {
+            agg.addItem(new SalesOrderLine("BED-KING", "Luxury King Size Bed", 1, 45000.00));
+            eventItems.add(new SalesOrderCreatedEvent.ItemDto("BED-KING", "Luxury King Size Bed", 1, 45000.00));
+        }
+
+        SalesOrder saved = repository.save(agg);
+        eventPublisher.publish(SalesOrderCreatedEvent.create(saved.getId(), saved.getReferenceCode(), saved.getTotalAmount(), eventItems));
         return saved;
+    }
+
+    @Transactional
+    public SalesOrder createSalesOrder(String referenceCode) {
+        return createSalesOrder(UUID.randomUUID(), referenceCode, 45000.00, null);
     }
 
     @Transactional(readOnly = true)
