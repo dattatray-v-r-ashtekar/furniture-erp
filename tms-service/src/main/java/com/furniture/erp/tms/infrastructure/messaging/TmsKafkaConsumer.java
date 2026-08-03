@@ -2,10 +2,12 @@ package com.furniture.erp.tms.infrastructure.messaging;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.furniture.erp.domain.event.DomainEvent;
 import com.furniture.erp.tms.application.service.DeliveryRouteService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,20 @@ public class TmsKafkaConsumer {
     }
 
     @KafkaListener(topics = {"SalesOrderCreatedEvent", "ProductionCompletedEvent"}, groupId = "tms-service-group")
-    public void handleOrderEvents(Object message) {
-        log.info("TMS received event from Kafka: {}", message);
+    public void handleOrderEventsFromKafka(Object message) {
+        processOrderEvents(message);
+    }
+
+    @EventListener
+    public void handleLocalDomainEvent(DomainEvent<?> event) {
+        String eventName = event.getClass().getSimpleName();
+        if (eventName.contains("SalesOrderCreated") || eventName.contains("ProductionCompleted")) {
+            processOrderEvents(event);
+        }
+    }
+
+    private void processOrderEvents(Object message) {
+        log.info("TMS received event: {}", message);
         try {
             Object val = message;
             if (val instanceof ConsumerRecord<?, ?> record) {

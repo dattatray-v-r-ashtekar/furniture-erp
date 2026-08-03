@@ -21,7 +21,7 @@ public class ProductionOrder extends AggregateRoot<UUID> {
     @Enumerated(EnumType.STRING)
     private ProductionStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "production_order_id")
     private List<WorkOrder> workOrders = new ArrayList<>();
 

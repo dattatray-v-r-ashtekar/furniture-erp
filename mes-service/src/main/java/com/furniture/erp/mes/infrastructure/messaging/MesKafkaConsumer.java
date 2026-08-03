@@ -2,10 +2,12 @@ package com.furniture.erp.mes.infrastructure.messaging;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.furniture.erp.domain.event.DomainEvent;
 import com.furniture.erp.mes.application.service.MesService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,19 @@ public class MesKafkaConsumer {
 
     @KafkaListener(topics = "SalesOrderCreatedEvent", groupId = "mes-service-group")
     public void handleSalesOrderCreated(Object message) {
-        log.info("MES received SalesOrderCreatedEvent from Kafka: {}", message);
+        processSalesOrderCreated(message);
+    }
+
+    @EventListener
+    public void handleLocalDomainEvent(DomainEvent<?> event) {
+        String eventName = event.getClass().getSimpleName();
+        if (eventName.contains("SalesOrderCreated")) {
+            processSalesOrderCreated(event);
+        }
+    }
+
+    private void processSalesOrderCreated(Object message) {
+        log.info("MES received SalesOrderCreatedEvent: {}", message);
         try {
             Object val = message;
             if (val instanceof ConsumerRecord<?, ?> record) {
@@ -39,8 +53,19 @@ public class MesKafkaConsumer {
                 root = objectMapper.valueToTree(val);
             }
 
-            String salesOrderId = root.has("orderId") ? root.get("orderId").asText() : (root.has("id") ? root.get("id").asText() : null);
-            String refCode = root.has("referenceCode") ? root.get("referenceCode").asText() : (root.has("externalReference") ? root.get("externalReference").asText() : null);
+            String salesOrderId = null;
+            if (root.has("orderId") && !root.get("orderId").isNull()) {
+                salesOrderId = root.get("orderId").asText();
+            } else if (root.has("id") && !root.get("id").isNull()) {
+                salesOrderId = root.get("id").asText();
+            }
+
+            String refCode = null;
+            if (root.has("referenceCode") && !root.get("referenceCode").isNull()) {
+                refCode = root.get("referenceCode").asText();
+            } else if (root.has("externalReference") && !root.get("externalReference").isNull()) {
+                refCode = root.get("externalReference").asText();
+            }
 
             boolean plannedAny = false;
 

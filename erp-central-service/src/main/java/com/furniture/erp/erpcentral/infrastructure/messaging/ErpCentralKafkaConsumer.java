@@ -2,11 +2,13 @@ package com.furniture.erp.erpcentral.infrastructure.messaging;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.furniture.erp.domain.event.DomainEvent;
 import com.furniture.erp.erpcentral.application.service.SalesOrderService;
 import com.furniture.erp.erpcentral.domain.event.SalesOrderCreatedEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,19 @@ public class ErpCentralKafkaConsumer {
 
     @KafkaListener(topics = "B2CPaymentReceivedEvent", groupId = "erp-central-service-group")
     public void handlePaymentReceived(Object message) {
-        log.info("ERP Central received B2CPaymentReceivedEvent from Kafka: {}", message);
+        processPaymentReceived(message);
+    }
+
+    @EventListener
+    public void handleLocalDomainEvent(DomainEvent<?> event) {
+        String eventName = event.getClass().getSimpleName();
+        if (eventName.contains("B2CPaymentReceived") || eventName.contains("PaymentReceived")) {
+            processPaymentReceived(event);
+        }
+    }
+
+    private void processPaymentReceived(Object message) {
+        log.info("ERP Central received B2CPaymentReceivedEvent: {}", message);
         try {
             Object val = message;
             if (val instanceof ConsumerRecord<?, ?> record) {
@@ -47,6 +61,8 @@ public class ErpCentralKafkaConsumer {
             UUID orderId = null;
             if (root.has("orderId") && !root.get("orderId").isNull()) {
                 orderId = UUID.fromString(root.get("orderId").asText());
+            } else if (root.has("id") && !root.get("id").isNull()) {
+                orderId = UUID.fromString(root.get("id").asText());
             } else if (root.has("aggregateId") && !root.get("aggregateId").isNull()) {
                 orderId = UUID.fromString(root.get("aggregateId").asText());
             } else {

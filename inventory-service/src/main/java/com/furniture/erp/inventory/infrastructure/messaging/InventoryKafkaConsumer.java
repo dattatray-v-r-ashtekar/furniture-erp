@@ -2,10 +2,12 @@ package com.furniture.erp.inventory.infrastructure.messaging;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.furniture.erp.domain.event.DomainEvent;
 import com.furniture.erp.inventory.application.service.InventoryService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,20 @@ public class InventoryKafkaConsumer {
     }
 
     @KafkaListener(topics = {"ProductionCompletedEvent", "GoodsReceivedEvent"}, groupId = "inventory-service-group")
-    public void handleInventoryEvents(Object message) {
-        log.info("Inventory received event from Kafka: {}", message);
+    public void handleInventoryEventsFromKafka(Object message) {
+        processInventoryEvents(message);
+    }
+
+    @EventListener
+    public void handleLocalDomainEvent(DomainEvent<?> event) {
+        String eventName = event.getClass().getSimpleName();
+        if (eventName.contains("ProductionCompleted") || eventName.contains("GoodsReceived")) {
+            processInventoryEvents(event);
+        }
+    }
+
+    private void processInventoryEvents(Object message) {
+        log.info("Inventory received event: {}", message);
         try {
             Object val = message;
             if (val instanceof ConsumerRecord<?, ?> record) {
@@ -60,23 +74,16 @@ public class InventoryKafkaConsumer {
                 qty = root.get("targetQuantity").asInt();
             }
 
-            if (qty <= 0) {
-                qty = 1;
+            if (sku != null) {
+                try {
+                    inventoryService.createStockItem(sku, "Finished Furniture (" + sku + ")", "WH-BAY-FINISHED");
+                } catch (Exception ignored) {}
+                inventoryService.addStock(sku, qty);
+                log.info("Inventory automatically incremented stock for SKU: {} by +{} units", sku, qty);
             }
 
-            if (sku != null && !sku.isBlank()) {
-                try {
-                    inventoryService.addStock(sku, qty);
-                    log.info("Inventory successfully incremented stock for SKU: {} by Qty: {}", sku, qty);
-                } catch (IllegalArgumentException notFoundEx) {
-                    // Stock item doesn't exist yet, create it and add stock
-                    inventoryService.createStockItem(sku, "Finished Good (" + sku + ")", "BIN-FG-01");
-                    inventoryService.addStock(sku, qty);
-                    log.info("Inventory created new StockItem and incremented stock for SKU: {} by Qty: {}", sku, qty);
-                }
-            }
         } catch (Exception e) {
-            log.error("Failed to process inventory event in InventoryKafkaConsumer", e);
+            log.error("Failed to process inventory increment event", e);
         }
     }
 }

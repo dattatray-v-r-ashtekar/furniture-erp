@@ -3,12 +3,16 @@ package com.furniture.erp.accounting.infrastructure.messaging;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furniture.erp.accounting.application.service.GeneralLedgerService;
+import com.furniture.erp.domain.event.DomainEvent;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -25,7 +29,19 @@ public class AccountingKafkaConsumer {
 
     @KafkaListener(topics = "B2CPaymentReceivedEvent", groupId = "accounting-service-group")
     public void handlePaymentReceived(Object message) {
-        log.info("Accounting received B2CPaymentReceivedEvent from Kafka: {}", message);
+        processPaymentReceived(message);
+    }
+
+    @EventListener
+    public void handleLocalDomainEvent(DomainEvent<?> event) {
+        String eventName = event.getClass().getSimpleName();
+        if (eventName.contains("B2CPaymentReceived") || eventName.contains("PaymentReceived")) {
+            processPaymentReceived(event);
+        }
+    }
+
+    private void processPaymentReceived(Object message) {
+        log.info("Accounting received B2CPaymentReceivedEvent: {}", message);
         try {
             Object val = message;
             if (val instanceof ConsumerRecord<?, ?> record) {
@@ -44,6 +60,8 @@ public class AccountingKafkaConsumer {
             UUID orderId = null;
             if (root.has("orderId") && !root.get("orderId").isNull()) {
                 orderId = UUID.fromString(root.get("orderId").asText());
+            } else if (root.has("id") && !root.get("id").isNull()) {
+                orderId = UUID.fromString(root.get("id").asText());
             } else if (root.has("aggregateId") && !root.get("aggregateId").isNull()) {
                 orderId = UUID.fromString(root.get("aggregateId").asText());
             } else {
@@ -58,22 +76,21 @@ public class AccountingKafkaConsumer {
                     ? root.get("totalAmount").asDouble()
                     : 45000.00;
 
-            StringBuilder desc = new StringBuilder("B2C Order Revenue " + ref);
+            String desc = "B2C Payment for Order " + ref;
             if (root.has("items") && root.get("items").isArray() && root.get("items").size() > 0) {
-                desc.append(" (");
-                boolean first = true;
+                List<String> names = new ArrayList<>();
                 for (JsonNode item : root.get("items")) {
-                    if (!first) desc.append(", ");
-                    String name = item.has("name") ? item.get("name").asText() : (item.has("sku") ? item.get("sku").asText() : "Item");
-                    int qty = item.has("quantity") ? item.get("quantity").asInt() : 1;
-                    desc.append(name).append(" x").append(qty);
-                    first = false;
+                    if (item.has("name")) {
+                        names.add(item.get("name").asText());
+                    } else if (item.has("sku")) {
+                        names.add(item.get("sku").asText());
+                    }
                 }
-                desc.append(")");
+                desc += " (" + String.join(", ", names) + ")";
             }
 
-            ledgerService.createLedger(orderId, ref, "REVENUE-B2C", "CREDIT", totalAmount, desc.toString());
-            log.info("Successfully recorded General Ledger entry for order {} amount ₹{}", ref, totalAmount);
+            ledgerService.createLedger(orderId, ref, "REVENUE-B2C", "CREDIT", totalAmount, desc);
+            log.info("Successfully recorded GL ledger entry for B2C order: {} (₹{})", ref, totalAmount);
         } catch (Exception e) {
             log.error("Failed to process payment event in Accounting", e);
         }

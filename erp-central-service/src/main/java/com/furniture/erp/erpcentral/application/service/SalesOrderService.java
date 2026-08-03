@@ -26,6 +26,10 @@ public class SalesOrderService {
 
     @Transactional
     public SalesOrder createSalesOrder(UUID orderId, String referenceCode, Double totalAmount, List<SalesOrderCreatedEvent.ItemDto> items) {
+        if (orderId != null && repository.existsById(orderId)) {
+            return repository.findById(orderId).get();
+        }
+
         SalesOrder agg = new SalesOrder(orderId, referenceCode, totalAmount, "CONFIRMED");
         
         List<SalesOrderCreatedEvent.ItemDto> eventItems = new ArrayList<>();

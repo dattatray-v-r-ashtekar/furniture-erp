@@ -8,13 +8,18 @@ import com.furniture.erp.mes.domain.event.MaterialConsumptionRequestedEvent;
 import com.furniture.erp.mes.domain.event.ProductionCompletedEvent;
 import com.furniture.erp.mes.domain.event.ProductionOrderCreatedEvent;
 import com.furniture.erp.mes.infrastructure.repository.ProductionOrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class MesService {
+
+    private static final Logger log = LoggerFactory.getLogger(MesService.class);
 
     private final ProductionOrderRepository productionOrderRepository;
     private final DomainEventPublisher<DomainEvent<?>> eventPublisher;
@@ -31,6 +36,16 @@ public class MesService {
 
     @Transactional
     public ProductionOrder planProduction(String productSku, Integer targetQuantity, String salesOrderId, String orderReference) {
+        if (salesOrderId != null && !salesOrderId.isBlank()) {
+            List<ProductionOrder> existing = productionOrderRepository.findAll().stream()
+                    .filter(po -> salesOrderId.equals(po.getSalesOrderId()) && productSku != null && productSku.equalsIgnoreCase(po.getProductSku()))
+                    .toList();
+            if (!existing.isEmpty()) {
+                log.info("Production order already planned for SalesOrderId {} and SKU {}, returning existing order", salesOrderId, productSku);
+                return existing.get(0);
+            }
+        }
+
         ProductionOrder order = new ProductionOrder(productSku, targetQuantity, salesOrderId, orderReference);
         
         // Add default routing for standard furniture (just an example)
